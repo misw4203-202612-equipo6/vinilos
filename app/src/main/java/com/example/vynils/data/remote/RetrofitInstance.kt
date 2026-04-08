@@ -1,0 +1,20 @@
+package com.example.vynils.data.remote
+
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+object RetrofitInstance {
+
+    private const val BASE_URL = "https://tu-api.com/"
+
+    val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    val albumService: AlbumService by lazy {
+        retrofit.create(AlbumService::class.java)
+    }
+}
