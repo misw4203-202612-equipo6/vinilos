@@ -23,7 +23,7 @@ fun AlbumListScreen(
 ) {
     val state by viewModel.state.collectAsState()
     LaunchedEffect(Unit) {
-        viewModel.loadAlbumsMock()
+        viewModel.loadAlbums()
     }
     Column{
         Row{
