@@ -3,19 +3,16 @@ package com.example.vynils.data.repository
 import com.example.vynils.data.remote.AlbumService
 import com.example.vynils.data.remote.RetrofitInstance
 import com.example.vynils.model.Album
-import com.example.vynils.ui.viewmodel.AlbumUiState
 
 class AlbumRepository(
     private val service: AlbumService = RetrofitInstance.albumService
 ) {
     suspend fun getAlbums(): List<Album> {
-        //return service.getAlbums()
-        return getAlbumsMock()
+        return service.getAlbums()
     }
 
-    suspend fun getAlbumById(id: Int): Album {
-        //return service.getAlbum(id)
-        return getAlbum(id)
+    suspend fun getAlbum(id: Int): Album {
+        return service.getAlbum(id)
     }
 
     suspend fun getAlbumsMock(): List<Album>{
@@ -38,7 +35,7 @@ class AlbumRepository(
         return fakeAlbums;
     }
 
-    suspend fun getAlbum(id: Int): Album{
+    suspend fun getAlbumMock(id: Int): Album{
         return Album(1, "Thriller", "", "1982-11-30", "Michael Jackson album", "Pop", "Sony");
     }
 }

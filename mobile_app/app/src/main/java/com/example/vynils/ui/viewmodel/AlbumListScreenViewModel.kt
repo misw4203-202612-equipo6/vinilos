@@ -18,13 +18,19 @@ class AlbumViewModel : ViewModel() {
     private val _state = MutableStateFlow(AlbumUiState())
     val state: StateFlow<AlbumUiState> = _state
     private val repository = AlbumRepository()
+
+    init {
+        loadAlbums()
+    }
+
     fun loadAlbums() {
         viewModelScope.launch {
+            _state.value = _state.value.copy(loading = true, error = null)
             try {
                 val albums = repository.getAlbums()
-                _state.value = AlbumUiState(albums = albums)
+                _state.value = AlbumUiState(albums = albums, loading = false)
             } catch (e: Exception) {
-                _state.value = AlbumUiState(error = e.message)
+                _state.value = AlbumUiState(error = "Error al cargar álbumes: ${e.message}", loading = false)
             }
         }
     }

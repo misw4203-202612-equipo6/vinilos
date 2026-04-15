@@ -7,7 +7,6 @@ import com.example.vynils.model.Performer
 class PerformerRepository(
     private val service: PerformerService = RetrofitInstance.performerService
 ) {
-
     suspend fun getPerformers(): List<Performer> {
         return service.getPerformers()
     }
@@ -15,5 +14,4 @@ class PerformerRepository(
     suspend fun getPerformer(id: Int): Performer {
         return service.getPerformer(id)
     }
-
 }

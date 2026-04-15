@@ -1,12 +1,15 @@
 package com.example.vynils.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.example.vynils.model.Performer
+import kotlinx.coroutines.launch
+import com.example.vynils.data.repository.PerformerRepository
 
 data class PerformerListScreenUiState(
-    val collectors: List<Performer> = emptyList(),
+    val performers: List<Performer> = emptyList(),
     val loading: Boolean = false,
     val error: String? = null
 )
@@ -14,7 +17,24 @@ data class PerformerListScreenUiState(
 class PerformerListScreenViewModel : ViewModel() {
     private val _state = MutableStateFlow(PerformerListScreenUiState())
     val state: StateFlow<PerformerListScreenUiState> = _state
+    private val repository = PerformerRepository()
+
+    init {
+        loadPerformers()
+    }
     fun loadPerformers() {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(loading = true, error = null)
+            try {
+                val performers = repository.getPerformers()
+                _state.value = PerformerListScreenUiState(performers = performers, loading = false)
+            } catch (e: Exception) {
+                _state.value = PerformerListScreenUiState(error = "Error al cargar álbumes: ${e.message}", loading = false)
+            }
+        }
+    }
+
+    fun loadPerformersMock() {
         val fakePerformers = listOf(
             Performer(
                 id = 1,
@@ -57,6 +77,6 @@ class PerformerListScreenViewModel : ViewModel() {
                 albums = emptyList(),
             )
         )
-        _state.value = PerformerListScreenUiState(collectors = fakePerformers)
+        _state.value = PerformerListScreenUiState(performers = fakePerformers)
     }
 }
