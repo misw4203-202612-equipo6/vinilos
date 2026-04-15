@@ -1,28 +1,78 @@
 package com.example.vynils.ui.view
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
 fun Home(navController: NavController) {
-    Column() {
-        Button(onClick = {
-            navController.navigate("albums")
-        }) {
-            Text("Albums")
-        }
-        Button(onClick = {
-            navController.navigate("artists")
-        }) {
-            Text("Artistas")
-        }
-        Button(onClick = {
-            navController.navigate("collectors")
-        }) {
-            Text("Coleccionistas")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(horizontal = 20.dp, vertical = 18.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp)
+    ) {
+        HomeOption(
+            text = "Albums",
+            onClick = { navController.navigate("albums") }
+        )
+        HomeOption(
+            text = "Artistas",
+            onClick = { navController.navigate("artists") }
+        )
+        HomeOption(
+            text = "Coleccionistas",
+            onClick = { navController.navigate("collectors") }
+        )
+    }
+}
+
+@Composable
+private fun HomeOption(
+    text: String,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(126.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFF8F9FB)
+        ),
+        border = BorderStroke(1.dp, Color(0xFFD1D5DB))
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = text,
+                color = Color.Black,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
