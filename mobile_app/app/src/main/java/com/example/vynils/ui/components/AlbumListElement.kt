@@ -51,7 +51,7 @@ fun AlbumListElement(album: Album) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(album.name, fontWeight = FontWeight.Bold)
-            Text(album.description.ifBlank { album.genre })
+            //Text(album.description.ifBlank { album.genre })
             Text(album.releaseDate)
         }
         OutlinedButton(
