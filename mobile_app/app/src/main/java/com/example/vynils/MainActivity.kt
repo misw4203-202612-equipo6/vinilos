@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.vynils.ui.AppNavigation
@@ -55,14 +56,14 @@ fun MainScreen() {
                 drawerContentColor = Color.Black
             ) {
                 Text(
-                    "Vinilos",
+                    stringResource(id = R.string.title_vinilos),
                     modifier = Modifier.padding(16.dp),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.headlineMedium
                 )
                 HorizontalDivider()
                 NavigationDrawerItem(
-                    label = { Text("Inicio") },
+                    label = { Text(stringResource(id = R.string.nav_home)) },
                     selected = currentRoute == "home",
                     onClick = {
                         navController.navigate("home")
@@ -79,7 +80,7 @@ fun MainScreen() {
                     )
                 )
                 NavigationDrawerItem(
-                    label = { Text("Álbumes") },
+                    label = { Text(stringResource(id = R.string.nav_albums)) },
                     selected = currentRoute == "albums",
                     onClick = {
                         navController.navigate("albums")
@@ -96,7 +97,7 @@ fun MainScreen() {
                     )
                 )
                 NavigationDrawerItem(
-                    label = { Text("Artistas") },
+                    label = { Text(stringResource(id = R.string.nav_artists)) },
                     selected = currentRoute == "artists",
                     onClick = {
                         navController.navigate("artists")
@@ -113,7 +114,7 @@ fun MainScreen() {
                     )
                 )
                 NavigationDrawerItem(
-                    label = { Text("Coleccionistas") },
+                    label = { Text(stringResource(id = R.string.nav_collectors)) },
                     selected = currentRoute == "collectors",
                     onClick = {
                         navController.navigate("collectors")

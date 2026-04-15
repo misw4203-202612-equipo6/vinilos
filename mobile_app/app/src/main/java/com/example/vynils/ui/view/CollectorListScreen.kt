@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vynils.R
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.vynils.ui.components.CollectorList
@@ -54,7 +56,7 @@ fun CollectorListScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Coleccionistas",
+                text = stringResource(id = R.string.title_collectors),
                 modifier = Modifier.padding(start = 20.dp, top = 12.dp, bottom = 10.dp),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
@@ -70,7 +72,7 @@ fun CollectorListScreen(
                 }) {
                     Icon(
                         imageVector = Icons.Default.FilterList,
-                        contentDescription = "Filtrar",
+                        contentDescription = stringResource(id = R.string.desc_filter),
                         tint = Color.Black
                     )
                 }
@@ -103,7 +105,7 @@ fun CollectorListScreen(
                         .padding(bottom = 32.dp)
                 ) {
                     Text(
-                        "Filtrar Coleccionistas",
+                        stringResource(id = R.string.filter_title_collectors),
                         fontSize = 20.sp,
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
@@ -113,7 +115,7 @@ fun CollectorListScreen(
                     OutlinedTextField(
                         value = tempName,
                         onValueChange = { tempName = it },
-                        label = { Text("Nombre del coleccionista") },
+                        label = { Text(stringResource(id = R.string.filter_label_collector_name)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
@@ -140,7 +142,7 @@ fun CollectorListScreen(
                             ),
                             border = BorderStroke(1.dp, Color.Black)
                         ) {
-                            Text("Limpiar")
+                            Text(stringResource(id = R.string.btn_clear))
                         }
                         Button(
                             onClick = {
@@ -156,7 +158,7 @@ fun CollectorListScreen(
                             ),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text("Aplicar")
+                            Text(stringResource(id = R.string.btn_apply))
                         }
                     }
                 }

@@ -14,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.example.vynils.R
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -26,7 +28,7 @@ fun Header(navController: NavHostController, onMenuClick: () -> Unit) {
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = "Vinilos",
+                text = stringResource(id = R.string.title_vinilos),
                 fontWeight = FontWeight.Bold
             )
         },
@@ -35,12 +37,12 @@ fun Header(navController: NavHostController, onMenuClick: () -> Unit) {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = stringResource(id = R.string.desc_back)
                     )
                 }
             } else {
                 IconButton(onClick = onMenuClick) {
-                    Icon(Icons.Default.Menu, contentDescription = "Menu")
+                    Icon(Icons.Default.Menu, contentDescription = stringResource(id = R.string.desc_menu))
                 }
             }
         },
@@ -48,7 +50,7 @@ fun Header(navController: NavHostController, onMenuClick: () -> Unit) {
             IconButton(onClick = {
                 navController.navigate("home")
             }) {
-                Icon(Icons.Default.Home, contentDescription = "Home")
+                Icon(Icons.Default.Home, contentDescription = stringResource(id = R.string.desc_home))
             }
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(

@@ -17,10 +17,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vynils.R
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.vynils.R
 import com.example.vynils.ui.viewmodel.AlbumDetailScreenViewModel
 import com.example.vynils.utils.DateUtils
 
@@ -48,17 +49,17 @@ fun AlbumDetailScreen(
             }
         } else if (state.error != null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Error: ${state.error}", color = Color.Red)
+                Text(text = stringResource(id = R.string.error_prefix, state.error ?: ""), color = Color.Red)
             }
         } else {
             state.album?.let { album ->
                 AsyncImage(
                     model = album.cover,
-                    contentDescription = "Cover of ${album.name}",
+                    contentDescription = stringResource(id = R.string.desc_album_cover, album.name),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .padding(20.dp)
+                        .padding(top = 20.dp)
+                        .size(width = 248.dp, height = 175.dp)
+                        .align(Alignment.CenterHorizontally)
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = R.drawable.no_image),
@@ -74,21 +75,21 @@ fun AlbumDetailScreen(
                 )
 
                 Text(
-                    text = "Lanzamiento: ${DateUtils.formatRetrofitDate(album.releaseDate)}",
+                    text = stringResource(id = R.string.label_release_date, DateUtils.formatRetrofitDate(album.releaseDate) ?: ""),
                     modifier = Modifier.padding(horizontal = 20.dp),
                     fontSize = 16.sp,
                     color = Color.DarkGray
                 )
 
                 Text(
-                    text = "Género: ${album.genre}",
+                    text = stringResource(id = R.string.label_genre, album.genre ?: ""),
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
                     fontSize = 16.sp,
                     color = Color.DarkGray
                 )
 
                 Text(
-                    text = "Sello discográfico: ${album.recordLabel}",
+                    text = stringResource(id = R.string.label_record_label, album.recordLabel ?: ""),
                     modifier = Modifier.padding(horizontal = 20.dp),
                     fontSize = 16.sp,
                     color = Color.DarkGray
@@ -97,7 +98,7 @@ fun AlbumDetailScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Descripción",
+                    text = stringResource(id = R.string.label_description),
                     modifier = Modifier.padding(horizontal = 20.dp),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -114,7 +115,7 @@ fun AlbumDetailScreen(
 
                 if (album.artists?.isNotEmpty() == true) {
                     Text(
-                        text = "Artistas",
+                        text = stringResource(id = R.string.nav_artists),
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,

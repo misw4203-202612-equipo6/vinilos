@@ -16,6 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vynils.R
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.vynils.ui.components.AlbumList
@@ -62,7 +64,7 @@ fun AlbumListScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Álbumes",
+                text = stringResource(id = R.string.title_albums),
                 modifier = Modifier.padding(start = 20.dp, top = 12.dp, bottom = 10.dp),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
@@ -80,7 +82,7 @@ fun AlbumListScreen(
                 }) {
                     Icon(
                         imageVector = Icons.Default.FilterList,
-                        contentDescription = "Filtrar",
+                        contentDescription = stringResource(id = R.string.desc_filter),
                         tint = Color.Black
                     )
                 }
@@ -114,7 +116,7 @@ fun AlbumListScreen(
                         .padding(bottom = 32.dp)
                 ) {
                     Text(
-                        "Filtrar Álbumes",
+                        stringResource(id = R.string.filter_title_albums),
                         fontSize = 20.sp,
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
@@ -124,7 +126,7 @@ fun AlbumListScreen(
                     OutlinedTextField(
                         value = tempName,
                         onValueChange = { tempName = it },
-                        label = { Text("Nombre del álbum") },
+                        label = { Text(stringResource(id = R.string.filter_label_album_name)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
@@ -139,7 +141,7 @@ fun AlbumListScreen(
                     OutlinedTextField(
                         value = tempGenre,
                         onValueChange = { tempGenre = it },
-                        label = { Text("Género (ej. Rock, Pop)") },
+                        label = { Text(stringResource(id = R.string.filter_label_genre)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
@@ -154,7 +156,7 @@ fun AlbumListScreen(
                     OutlinedTextField(
                         value = tempYear,
                         onValueChange = { tempYear = it },
-                        label = { Text("Año de lanzamiento") },
+                        label = { Text(stringResource(id = R.string.filter_label_year)) },
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
@@ -182,7 +184,7 @@ fun AlbumListScreen(
                             ),
                             border = BorderStroke(1.dp, Color.Black)
                         ) {
-                            Text("Limpiar")
+                            Text(stringResource(id = R.string.btn_clear))
                         }
                         Button(
                             onClick = {
@@ -198,7 +200,7 @@ fun AlbumListScreen(
                             ),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text("Aplicar")
+                            Text(stringResource(id = R.string.btn_apply))
                         }
                     }
                 }

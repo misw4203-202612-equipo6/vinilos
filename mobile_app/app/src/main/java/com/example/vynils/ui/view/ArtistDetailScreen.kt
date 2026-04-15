@@ -35,10 +35,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vynils.R
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.vynils.R
 import com.example.vynils.ui.components.AlbumListElement
 import com.example.vynils.ui.components.MusicianList
 import com.example.vynils.ui.viewmodel.ArtistDetailScreenViewModel
@@ -64,7 +65,7 @@ fun ArtistDetailScreen(
         when {
             state.error != null -> {
                 Text(
-                    text = "Error: ${state.error}",
+                    text = stringResource(id = R.string.error_prefix, state.error ?: ""),
                     modifier = Modifier.padding(20.dp),
                     fontSize = 14.sp,
                     color = Color.Red
@@ -90,7 +91,7 @@ fun ArtistDetailScreen(
 
                 AsyncImage(
                     model = if (artistImage.isEmpty()) null else artistImage,
-                    contentDescription = "Imagen de ${artist?.name}",
+                    contentDescription = stringResource(id = R.string.desc_artist_image, artist?.name ?: ""),
                     modifier = Modifier
                         .padding(top = 20.dp)
                         .size(width = 248.dp, height = 175.dp)
@@ -102,14 +103,14 @@ fun ArtistDetailScreen(
                 )
 
                 Text(
-                    text = artist?.name ?: "Cargando...",
+                    text = artist?.name ?: stringResource(id = R.string.loading),
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
 
                 ArtistDetailSectionHeader(
-                    title = "Biografia"
+                    title = stringResource(id = R.string.label_biography)
                 )
                 Text(
                     text = artist?.description ?: "",
@@ -131,7 +132,7 @@ fun ArtistDetailScreen(
                     }
                 } else {
                     Text(
-                        text = "No hay albumes disponibles",
+                        text = stringResource(id = R.string.empty_albums),
                         modifier = Modifier.padding(start = 20.dp, top = 4.dp),
                         fontSize = 14.sp,
                         color = Color.Gray
@@ -139,7 +140,7 @@ fun ArtistDetailScreen(
                 }
 
                 Text(
-                    text = "Musicos",
+                    text = stringResource(id = R.string.label_musicians),
                     modifier = Modifier.padding(start = 20.dp, top = 24.dp, bottom = 10.dp),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
@@ -150,7 +151,7 @@ fun ArtistDetailScreen(
                     MusicianList(musicians = musicians)
                 } else {
                     Text(
-                        text = "No hay musicos registrados",
+                        text = stringResource(id = R.string.empty_musicians),
                         modifier = Modifier.padding(start = 20.dp, top = 4.dp),
                         fontSize = 14.sp,
                         color = Color.Gray
@@ -192,7 +193,7 @@ private fun ArtistDetailAlbumsHeader() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Albums",
+            text = stringResource(id = R.string.nav_albums),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )

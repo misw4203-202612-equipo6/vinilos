@@ -20,6 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vynils.R
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 
 @Composable
@@ -32,15 +34,15 @@ fun Home(navController: NavController) {
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         HomeOption(
-            text = "Albums",
+            text = stringResource(id = R.string.nav_albums),
             onClick = { navController.navigate("albums") }
         )
         HomeOption(
-            text = "Artistas",
+            text = stringResource(id = R.string.nav_artists),
             onClick = { navController.navigate("artists") }
         )
         HomeOption(
-            text = "Coleccionistas",
+            text = stringResource(id = R.string.nav_collectors),
             onClick = { navController.navigate("collectors") }
         )
     }

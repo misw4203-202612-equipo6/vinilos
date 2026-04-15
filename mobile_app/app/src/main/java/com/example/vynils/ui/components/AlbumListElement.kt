@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Alignment
@@ -53,9 +54,9 @@ fun AlbumListElement(album: Album, onClick: () -> Unit) {
             Text(album.name ?: "", fontWeight = FontWeight.Bold)
             
             val artistName = if (album.artists?.isNotEmpty() == true) {
-                album.artists[0].name ?: "Artista desconocido"
+                album.artists[0].name ?: stringResource(id = R.string.unknown_artist)
             } else {
-                "Artista desconocido"
+                stringResource(id = R.string.unknown_artist)
             }
             Text(text = artistName, color = Color.DarkGray, fontWeight = FontWeight.Medium)
 
