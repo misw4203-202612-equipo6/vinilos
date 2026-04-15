@@ -51,7 +51,7 @@ fun CollectorListElement(collector: Collector, onClick: () -> Unit) {
                 .padding(start = 12.dp, end = 12.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(collector.name, fontWeight = FontWeight.Bold)
+            Text(collector.name ?: "", fontWeight = FontWeight.Bold)
         }
     }
 }

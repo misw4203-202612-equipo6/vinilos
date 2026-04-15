@@ -77,9 +77,18 @@ fun CollectorListScreen(
             }
         }
 
-        CollectorList(state.filteredCollectors, onCollectorClick = { collectorId ->
-            navController.navigate("collectorDetail/$collectorId")
-        })
+        if (state.loading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color.Black)
+            }
+        } else {
+            CollectorList(state.filteredCollectors, onCollectorClick = { collectorId ->
+                navController.navigate("collectorDetail/$collectorId")
+            })
+        }
 
         if (showFilterSheet) {
             ModalBottomSheet(

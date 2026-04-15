@@ -67,6 +67,8 @@ fun AlbumListScreen(
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             )
+
+
             IconButton(
                 onClick = { showFilterSheet = true },
                 modifier = Modifier.padding(end = 8.dp)
@@ -83,11 +85,21 @@ fun AlbumListScreen(
                     )
                 }
             }
+
         }
 
-        AlbumList(state.filteredAlbums, onAlbumClick = { albumId ->
-            navController.navigate("albumDetail/$albumId")
-        })
+        if (state.loading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color.Black)
+            }
+        } else {
+            AlbumList(state.filteredAlbums, onAlbumClick = { albumId ->
+                navController.navigate("albumDetail/$albumId")
+            })
+        }
 
         if (showFilterSheet) {
             ModalBottomSheet(

@@ -2,6 +2,9 @@ package com.example.vynils.ui.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -10,11 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -42,12 +47,20 @@ fun CollectorDetailScreen(
         viewModel.loadCollector(collectorId)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(rememberScrollState())
-    ) {
+    if (state.loading) {
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = Color.Black)
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(rememberScrollState())
+        ) {
         AsyncImage(
             model = R.drawable.no_image,
             contentDescription = "Imagen del coleccionista",
@@ -106,7 +119,56 @@ fun CollectorDetailScreen(
                 color = Color.Gray
             )
         }
+
+        Text(
+            text = "Artistas favoritos",
+            modifier = Modifier.padding(start = 20.dp, top = 24.dp, bottom = 10.dp),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        val favoritePerformers = state.collector?.favoritePerformers ?: emptyList()
+        if (favoritePerformers.isNotEmpty()) {
+            favoritePerformers.forEach { artist ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val artistImage = artist.image?.let {
+                        if (it.startsWith("http://")) it.replace("http://", "https://") else it
+                    } ?: ""
+                    
+                    AsyncImage(
+                        model = if (artistImage.isEmpty()) null else artistImage,
+                        contentDescription = artist.name,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(RoundedCornerShape(4.dp)),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(id = R.drawable.no_image),
+                        error = painterResource(id = R.drawable.no_image)
+                    )
+                    Text(
+                        text = artist.name ?: "",
+                        modifier = Modifier.padding(start = 12.dp),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                androidx.compose.material3.HorizontalDivider(color = Color(0xFFD5D9E0))
+            }
+        } else {
+            Text(
+                text = "No hay artistas favoritos",
+                modifier = Modifier.padding(start = 20.dp, top = 4.dp),
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+        }
         
-        Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
+        }
     }
 }

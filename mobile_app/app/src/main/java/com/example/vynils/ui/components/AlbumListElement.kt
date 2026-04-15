@@ -50,17 +50,17 @@ fun AlbumListElement(album: Album, onClick: () -> Unit) {
                 .padding(start = 12.dp, end = 12.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(album.name, fontWeight = FontWeight.Bold)
+            Text(album.name ?: "", fontWeight = FontWeight.Bold)
             
             val artistName = if (album.artists?.isNotEmpty() == true) {
-                album.artists[0].name
+                album.artists[0].name ?: "Artista desconocido"
             } else {
                 "Artista desconocido"
             }
             Text(text = artistName, color = Color.DarkGray, fontWeight = FontWeight.Medium)
 
-            Text(album.genre, color = Color.Gray)
-            Text(DateUtils.formatRetrofitDate(album.releaseDate))
+            Text(album.genre ?: "", color = Color.Gray)
+            Text(DateUtils.formatRetrofitDate(album.releaseDate) ?: "")
         }
     }
 }

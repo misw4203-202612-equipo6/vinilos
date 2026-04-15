@@ -77,9 +77,18 @@ fun ArtistListScreen(
             }
         }
 
-        ArtistList(state.filteredArtists, onArtistClick = { artistId ->
-            navController.navigate("artistDetail/$artistId")
-        })
+        if (state.loading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color.Black)
+            }
+        } else {
+            ArtistList(state.filteredArtists, onArtistClick = { artistId ->
+                navController.navigate("artistDetail/$artistId")
+            })
+        }
 
         if (showFilterSheet) {
             ModalBottomSheet(
