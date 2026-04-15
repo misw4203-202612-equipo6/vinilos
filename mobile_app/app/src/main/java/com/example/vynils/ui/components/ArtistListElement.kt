@@ -1,10 +1,10 @@
 package com.example.vynils.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,26 +23,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import coil.compose.AsyncImage
 import com.example.vynils.R
-import com.example.vynils.model.Performer
+import com.example.vynils.model.Artist
 
 @Composable
-fun MusicianListElement(performer: Performer) {
+fun ArtistListElement(artist: Artist, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .heightIn(min = 104.dp)
             .padding(horizontal = 20.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val imageUrl = artist.image.let {
+            if (it.startsWith("http://")) it.replace("http://", "https://") else it
+        }.ifEmpty { null }
+
         AsyncImage(
-            model = performer.image,
-            contentDescription = performer.description,
+            model = imageUrl,
+            contentDescription = artist.name,
             modifier = Modifier
                 .size(width = 78.dp, height = 78.dp)
-                .clip(RoundedCornerShape(2.dp)),
+                .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop,
-            placeholder = painterResource(id = R.drawable.mi_imagen),
-            error = painterResource(id = R.drawable.mi_imagen)
+            placeholder = painterResource(id = R.drawable.no_image),
+            error = painterResource(id = R.drawable.no_image)
         )
         Column(
             modifier = Modifier
@@ -50,15 +55,7 @@ fun MusicianListElement(performer: Performer) {
                 .padding(start = 12.dp, end = 12.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(performer.name, fontWeight = FontWeight.Bold)
-        }
-        OutlinedButton(
-            onClick = { },
-            shape = RoundedCornerShape(2.dp),
-            border = BorderStroke(1.dp, Color.Black),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp)
-        ) {
-            Text("Detalle", fontWeight = FontWeight.Bold, color = Color.Black)
+            Text(artist.name, fontWeight = FontWeight.Bold)
         }
     }
 }

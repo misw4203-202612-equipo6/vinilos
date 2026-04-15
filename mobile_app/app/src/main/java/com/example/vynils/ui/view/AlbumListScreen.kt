@@ -1,78 +1,196 @@
 package com.example.vynils.ui.view
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.*
-import androidx.compose.material3.Text
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.vynils.ui.viewmodel.AlbumViewModel
-import com.example.vynils.ui.components.SearchBar
-
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.vynils.ui.components.AlbumList
+import com.example.vynils.ui.viewmodel.AlbumViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumListScreen(
+    navController: NavController,
     viewModel: AlbumViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showFilterSheet by remember { mutableStateOf(false) }
+
+    // Estados temporales para el filtro en el BottomSheet
+    var tempName by remember { mutableStateOf("") }
+    var tempGenre by remember { mutableStateOf("") }
+    var tempYear by remember { mutableStateOf("") }
+
+    // Sincronizar estados temporales cuando se abre el sheet
+    LaunchedEffect(showFilterSheet) {
+        if (showFilterSheet) {
+            tempName = state.filterName
+            tempGenre = state.filterGenre
+            tempYear = state.filterYear
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.loadAlbums()
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        Text(
-            text = "Álbumes",
-            modifier = Modifier.padding(start = 20.dp, top = 12.dp, bottom = 10.dp),
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 16.dp, bottom = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                SearchBar()
-            }
-            IconButton(onClick = { }) {
-                Icon(
-                    imageVector = Icons.Default.FilterList,
-                    contentDescription = "Filtrar",
-                    tint = Color.Black
-                )
-            }
-            FloatingActionButton(
-                onClick = { },
-                containerColor = Color.Black,
-                contentColor = Color.White
+            Text(
+                text = "Álbumes",
+                modifier = Modifier.padding(start = 20.dp, top = 12.dp, bottom = 10.dp),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+            IconButton(
+                onClick = { showFilterSheet = true },
+                modifier = Modifier.padding(end = 8.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar álbum")
+                BadgedBox(badge = {
+                    if (state.filterName.isNotEmpty() || state.filterGenre.isNotEmpty() || state.filterYear.isNotEmpty()) {
+                        Badge(containerColor = Color.Black) { Text("", color = Color.White) }
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.FilterList,
+                        contentDescription = "Filtrar",
+                        tint = Color.Black
+                    )
+                }
             }
         }
-        AlbumList(state.albums)
+
+        AlbumList(state.filteredAlbums, onAlbumClick = { albumId ->
+            navController.navigate("albumDetail/$albumId")
+        })
+
+        if (showFilterSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showFilterSheet = false },
+                sheetState = sheetState,
+                containerColor = Color.White
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .padding(bottom = 32.dp)
+                ) {
+                    Text(
+                        "Filtrar Álbumes",
+                        fontSize = 20.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = tempName,
+                        onValueChange = { tempName = it },
+                        label = { Text("Nombre del álbum") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Black,
+                            focusedLabelColor = Color.Black,
+                            cursorColor = Color.Black
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    OutlinedTextField(
+                        value = tempGenre,
+                        onValueChange = { tempGenre = it },
+                        label = { Text("Género (ej. Rock, Pop)") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Black,
+                            focusedLabelColor = Color.Black,
+                            cursorColor = Color.Black
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    OutlinedTextField(
+                        value = tempYear,
+                        onValueChange = { tempYear = it },
+                        label = { Text("Año de lanzamiento") },
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Black,
+                            focusedLabelColor = Color.Black,
+                            cursorColor = Color.Black
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = {
+                                viewModel.clearFilters()
+                                showFilterSheet = false
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = Color.Black
+                            ),
+                            border = BorderStroke(1.dp, Color.Black)
+                        ) {
+                            Text("Limpiar")
+                        }
+                        Button(
+                            onClick = {
+                                viewModel.updateFilters(tempName, tempGenre, tempYear)
+                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    if (!sheetState.isVisible) showFilterSheet = false
+                                }
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Black,
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text("Aplicar")
+                        }
+                    }
+                }
+            }
+        }
     }
 }

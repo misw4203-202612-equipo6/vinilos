@@ -7,15 +7,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.vynils.model.Collector
+import com.example.vynils.model.Artist
 
 @Composable
-fun CollectorList(collectors: List<Collector>, onCollectorClick: (Int) -> Unit) {
+fun ArtistList(musicians: List<Artist>, onArtistClick: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
-        items(collectors) { collector ->
-            CollectorListElement(collector, onClick = { onCollectorClick(collector.id) })
+        items(musicians) { musician ->
+            ArtistListElement(musician, onClick = { onArtistClick(musician.id) })
             HorizontalDivider(color = Color(0xFFD5D9E0))
         }
     }

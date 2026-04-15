@@ -16,7 +16,7 @@ import com.example.vynils.model.Track
 fun TrackListElement(track: Track){
     Row{
         Image(
-            painter = painterResource(id = R.drawable.mi_imagen),
+            painter = painterResource(id = R.drawable.no_image),
             contentDescription = "Descripción",
             modifier = Modifier.size(80.dp)
         )

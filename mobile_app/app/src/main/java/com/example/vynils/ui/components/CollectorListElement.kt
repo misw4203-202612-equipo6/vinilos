@@ -1,10 +1,10 @@
 package com.example.vynils.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,23 +26,24 @@ import com.example.vynils.R
 import com.example.vynils.model.Collector
 
 @Composable
-fun CollectorListElement(collector: Collector) {
+fun CollectorListElement(collector: Collector, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .heightIn(min = 104.dp)
             .padding(horizontal = 20.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = R.drawable.mi_imagen,
+            model = R.drawable.no_image,
             contentDescription = collector.name,
             modifier = Modifier
                 .size(width = 78.dp, height = 78.dp)
                 .clip(RoundedCornerShape(2.dp)),
             contentScale = ContentScale.Crop,
-            placeholder = painterResource(id = R.drawable.mi_imagen),
-            error = painterResource(id = R.drawable.mi_imagen)
+            placeholder = painterResource(id = R.drawable.no_image),
+            error = painterResource(id = R.drawable.no_image)
         )
         Column(
             modifier = Modifier
@@ -51,14 +52,6 @@ fun CollectorListElement(collector: Collector) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(collector.name, fontWeight = FontWeight.Bold)
-        }
-        OutlinedButton(
-            onClick = { },
-            shape = RoundedCornerShape(2.dp),
-            border = BorderStroke(1.dp, Color.Black),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp)
-        ) {
-            Text("Detalle", fontWeight = FontWeight.Bold, color = Color.Black)
         }
     }
 }

@@ -5,7 +5,7 @@ data class Collector(
     val name: String,
     val telephone: String,
     val email: String,
-    val favoritePerformers: List<Performer>,
+    val favoritePerformers: List<Artist>,
     val comments: List<Comment>,
     val collectorAlbums: List<Album>
 )

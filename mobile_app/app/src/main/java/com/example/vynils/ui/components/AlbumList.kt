@@ -10,12 +10,12 @@ import androidx.compose.ui.graphics.Color
 import com.example.vynils.model.Album
 
 @Composable
-fun AlbumList(albums: List<Album>) {
+fun AlbumList(albums: List<Album>, onAlbumClick: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
         items(albums) { album ->
-            AlbumListElement(album)
+            AlbumListElement(album, onClick = { onAlbumClick(album.id) })
             HorizontalDivider(color = Color(0xFFD5D9E0))
         }
     }

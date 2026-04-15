@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,19 +29,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.vynils.R
-import com.example.vynils.ui.components.AlbumList
-import com.example.vynils.ui.viewmodel.CollectorDetailScreenViewModel
+import com.example.vynils.ui.components.AlbumListElement
+import com.example.vynils.ui.viewmodel.ArtistDetailScreenViewModel
 
 @Composable
-fun CollectorDetailScreen(
+fun ArtistDetailScreen(
     navController: NavController,
-    collectorId: Int,
-    viewModel: CollectorDetailScreenViewModel = viewModel()
+    artistId: Int,
+    viewModel: ArtistDetailScreenViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
-
-    LaunchedEffect(collectorId) {
-        viewModel.loadCollector(collectorId)
+    
+    LaunchedEffect(artistId) {
+        viewModel.loadArtist(artistId)
     }
 
     Column(
@@ -48,59 +50,59 @@ fun CollectorDetailScreen(
             .background(Color.White)
             .verticalScroll(rememberScrollState())
     ) {
+        val artistImage = state.artist?.image?.let {
+            if (it.startsWith("http://")) it.replace("http://", "https://") else it
+        } ?: ""
+
         AsyncImage(
-            model = R.drawable.no_image,
-            contentDescription = "Imagen del coleccionista",
+            model = if (artistImage.isEmpty()) null else artistImage,
+            contentDescription = "Imagen de ${state.artist?.name}",
             modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
                 .padding(20.dp)
-                .size(120.dp)
                 .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(id = R.drawable.no_image),
             error = painterResource(id = R.drawable.no_image)
         )
         Text(
-            text = state.collector?.name ?: "Cargando...",
+            text = state.artist?.name ?: "Cargando...",
             modifier = Modifier.padding(start = 20.dp, top = 12.dp, bottom = 10.dp),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "Información de contacto",
-            modifier = Modifier.padding(start = 20.dp, top = 12.dp, bottom = 4.dp),
+            text = "Biografía",
+            modifier = Modifier.padding(start = 20.dp, top = 12.dp, bottom = 10.dp),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "Teléfono: ${state.collector?.telephone ?: ""}",
-            modifier = Modifier.padding(start = 20.dp, top = 4.dp, bottom = 2.dp),
+            text = state.artist?.description ?: "",
+            modifier = Modifier.padding(start = 20.dp, top = 4.dp, bottom = 10.dp),
             fontSize = 14.sp
         )
+        
         Text(
-            text = "Email: ${state.collector?.email ?: ""}",
-            modifier = Modifier.padding(start = 20.dp, top = 2.dp, bottom = 10.dp),
-            fontSize = 14.sp
-        )
-
-        Text(
-            text = "Álbumes en la colección",
+            text = "Álbumes",
             modifier = Modifier.padding(start = 20.dp, top = 12.dp, bottom = 10.dp),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
 
-        val collectorAlbums = state.collector?.collectorAlbums ?: emptyList()
-        if (collectorAlbums.isNotEmpty()) {
-            collectorAlbums.forEach { album ->
-                com.example.vynils.ui.components.AlbumListElement(
+        val albums = state.artist?.albums ?: emptyList()
+        if (albums.isNotEmpty()) {
+            albums.forEach { album ->
+                AlbumListElement(
                     album = album,
                     onClick = { navController.navigate("albumDetail/${album.id}") }
                 )
-                androidx.compose.material3.HorizontalDivider(color = Color(0xFFD5D9E0))
+                HorizontalDivider(color = Color(0xFFD5D9E0))
             }
         } else {
             Text(
-                text = "No hay álbumes en la colección",
+                text = "No hay álbumes disponibles",
                 modifier = Modifier.padding(start = 20.dp, top = 4.dp),
                 fontSize = 14.sp,
                 color = Color.Gray

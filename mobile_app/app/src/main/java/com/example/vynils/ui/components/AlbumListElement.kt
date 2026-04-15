@@ -1,11 +1,9 @@
 package com.example.vynils.ui.components
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,12 +22,14 @@ import androidx.compose.ui.text.font.FontWeight
 import coil.compose.AsyncImage
 import com.example.vynils.R
 import com.example.vynils.model.Album
+import com.example.vynils.utils.DateUtils
 
 @Composable
-fun AlbumListElement(album: Album) {
+fun AlbumListElement(album: Album, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .heightIn(min = 104.dp)
             .padding(horizontal = 20.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -41,8 +41,8 @@ fun AlbumListElement(album: Album) {
                 .size(width = 78.dp, height = 78.dp)
                 .clip(RoundedCornerShape(2.dp)),
             contentScale = ContentScale.Crop,
-            placeholder = painterResource(id = R.drawable.mi_imagen),
-            error = painterResource(id = R.drawable.mi_imagen)
+            placeholder = painterResource(id = R.drawable.no_image),
+            error = painterResource(id = R.drawable.no_image)
         )
         Column(
             modifier = Modifier
@@ -51,16 +51,16 @@ fun AlbumListElement(album: Album) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(album.name, fontWeight = FontWeight.Bold)
-            //Text(album.description.ifBlank { album.genre })
-            Text(album.releaseDate)
-        }
-        OutlinedButton(
-            onClick = { },
-            shape = RoundedCornerShape(2.dp),
-            border = BorderStroke(1.dp, Color.Black),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp)
-        ) {
-            Text("Detalle", fontWeight = FontWeight.Bold, color = Color.Black)
+            
+            val artistName = if (album.artists?.isNotEmpty() == true) {
+                album.artists[0].name
+            } else {
+                "Artista desconocido"
+            }
+            Text(text = artistName, color = Color.DarkGray, fontWeight = FontWeight.Medium)
+
+            Text(album.genre, color = Color.Gray)
+            Text(DateUtils.formatRetrofitDate(album.releaseDate))
         }
     }
 }

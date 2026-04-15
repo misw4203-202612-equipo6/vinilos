@@ -16,15 +16,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.vynils.ui.components.CollectorList
-import com.example.vynils.ui.viewmodel.CollectorListScreenViewModel
+import com.example.vynils.ui.components.ArtistList
+import com.example.vynils.ui.viewmodel.ArtistListScreenViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollectorListScreen(
+fun ArtistListScreen(
     navController: NavController,
-    viewModel: CollectorListScreenViewModel = viewModel()
+    viewModel: ArtistListScreenViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val sheetState = rememberModalBottomSheetState()
@@ -40,7 +40,7 @@ fun CollectorListScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.loadCollectors()
+        viewModel.loadArtists()
     }
 
     Column(
@@ -54,7 +54,7 @@ fun CollectorListScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Coleccionistas",
+                text = "Artistas",
                 modifier = Modifier.padding(start = 20.dp, top = 12.dp, bottom = 10.dp),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
@@ -77,8 +77,8 @@ fun CollectorListScreen(
             }
         }
 
-        CollectorList(state.filteredCollectors, onCollectorClick = { collectorId ->
-            navController.navigate("collectorDetail/$collectorId")
+        ArtistList(state.filteredArtists, onArtistClick = { artistId ->
+            navController.navigate("artistDetail/$artistId")
         })
 
         if (showFilterSheet) {
@@ -94,7 +94,7 @@ fun CollectorListScreen(
                         .padding(bottom = 32.dp)
                 ) {
                     Text(
-                        "Filtrar Coleccionistas",
+                        "Filtrar Artistas",
                         fontSize = 20.sp,
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
@@ -104,7 +104,7 @@ fun CollectorListScreen(
                     OutlinedTextField(
                         value = tempName,
                         onValueChange = { tempName = it },
-                        label = { Text("Nombre del coleccionista") },
+                        label = { Text("Nombre del artista") },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
