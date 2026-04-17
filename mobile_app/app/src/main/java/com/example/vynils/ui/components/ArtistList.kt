@@ -17,6 +17,7 @@ fun ArtistList(
     modifier: Modifier = Modifier,
     isLazy: Boolean = true
 ) {
+    artists.forEach {artist -> println(artist.name) }
     if (isLazy) {
         LazyColumn(
             modifier = modifier.fillMaxSize()
