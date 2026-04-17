@@ -43,6 +43,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.vynils.ui.components.AlbumListElement
 import com.example.vynils.ui.components.PerformerList
+import com.example.vynils.ui.components.TrackList
 import com.example.vynils.model.Band
 import com.example.vynils.model.Musician
 import com.example.vynils.ui.viewmodel.PerformerDetailScreenViewModel
@@ -63,6 +64,7 @@ fun ArtistDetailScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .testTag("artist-detail-scroll")
             .verticalScroll(rememberScrollState())
     ) {
         when {
@@ -98,6 +100,7 @@ fun ArtistDetailScreen(
                     modifier = Modifier
                         .padding(top = 20.dp)
                         .size(width = 248.dp, height = 175.dp)
+                        .testTag("artist-detail-image")
                         .align(Alignment.CenterHorizontally)
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop,
@@ -119,7 +122,9 @@ fun ArtistDetailScreen(
                 )
                 Text(
                     text = performer?.description ?: "",
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 8.dp)
+                        .testTag("artist-detail-biography"),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Justify
                 )
@@ -142,6 +147,26 @@ fun ArtistDetailScreen(
                 } else {
                     Text(
                         text = stringResource(id = R.string.empty_albums),
+                        modifier = Modifier.padding(start = 20.dp, top = 4.dp),
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+                }
+
+                Text(
+                    text = "Tracks",
+                    modifier = Modifier
+                        .padding(start = 20.dp, top = 24.dp, bottom = 10.dp)
+                        .testTag("artist-tracks-title"),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                if (state.tracks.isNotEmpty()) {
+                    TrackList(tracks = state.tracks)
+                } else {
+                    Text(
+                        text = "No hay tracks disponibles",
                         modifier = Modifier.padding(start = 20.dp, top = 4.dp),
                         fontSize = 14.sp,
                         color = Color.Gray
