@@ -87,6 +87,17 @@ fun CollectorListScreen(
             ) {
                 CircularProgressIndicator(color = Color.Black)
             }
+        } else if (state.error != null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = state.error ?: "",
+                    color = Color.Red,
+                    modifier = Modifier.padding(20.dp)
+                )
+            }
         } else {
             CollectorList(state.filteredCollectors, onCollectorClick = { collectorId ->
                 navController.navigate("collectorDetail/$collectorId")

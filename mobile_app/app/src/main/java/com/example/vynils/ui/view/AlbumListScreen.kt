@@ -98,6 +98,17 @@ fun AlbumListScreen(
             ) {
                 CircularProgressIndicator(color = Color.Black)
             }
+        } else if (state.error != null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = state.error ?: "",
+                    color = Color.Red,
+                    modifier = Modifier.padding(20.dp)
+                )
+            }
         } else {
             AlbumList(state.filteredAlbums, onAlbumClick = { albumId ->
                 navController.navigate("albumDetail/$albumId")

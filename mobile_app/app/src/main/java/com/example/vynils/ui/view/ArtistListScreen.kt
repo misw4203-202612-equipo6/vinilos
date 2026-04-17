@@ -19,15 +19,15 @@ import com.example.vynils.R
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.vynils.ui.components.ArtistList
-import com.example.vynils.ui.viewmodel.ArtistListScreenViewModel
+import com.example.vynils.ui.components.PerformerList
+import com.example.vynils.ui.viewmodel.PerformerListScreenViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistListScreen(
     navController: NavController,
-    viewModel: ArtistListScreenViewModel = viewModel()
+    viewModel: PerformerListScreenViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val sheetState = rememberModalBottomSheetState()
@@ -43,7 +43,7 @@ fun ArtistListScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.loadArtists()
+        viewModel.loadPerformers()
     }
 
     Column(
@@ -87,10 +87,26 @@ fun ArtistListScreen(
             ) {
                 CircularProgressIndicator(color = Color.Black)
             }
+        } else if (state.error != null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = state.error ?: "",
+                    color = Color.Red,
+                    modifier = Modifier.padding(20.dp)
+                )
+            }
         } else {
-            ArtistList(state.filteredArtists, onArtistClick = { artistId ->
+            PerformerList(
+                performers = state.filteredPerformers,
+                onPerformerClick = { artistId ->
                 navController.navigate("artistDetail/$artistId")
-            })
+                },
+                tagPrefix = "artist",
+                showDetailButton = true
+            )
         }
 
         if (showFilterSheet) {

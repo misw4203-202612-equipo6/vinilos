@@ -113,7 +113,7 @@ fun AlbumDetailScreen(
                     textAlign = TextAlign.Justify
                 )
 
-                if (album.artists?.isNotEmpty() == true) {
+                if (album.performers?.isNotEmpty() == true) {
                     Text(
                         text = stringResource(id = R.string.nav_artists),
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
@@ -121,7 +121,7 @@ fun AlbumDetailScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
-                    album.artists.forEach { artist ->
+                    album.performers.forEach { artist ->
                         Text(
                             text = artist.name,
                             modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp),

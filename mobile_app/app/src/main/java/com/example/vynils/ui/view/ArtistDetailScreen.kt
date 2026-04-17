@@ -42,19 +42,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.vynils.ui.components.AlbumListElement
-import com.example.vynils.ui.components.MusicianList
-import com.example.vynils.ui.viewmodel.ArtistDetailScreenViewModel
+import com.example.vynils.ui.components.PerformerList
+import com.example.vynils.model.Band
+import com.example.vynils.model.Musician
+import com.example.vynils.ui.viewmodel.PerformerDetailScreenViewModel
 
 @Composable
 fun ArtistDetailScreen(
     navController: NavController,
     artistId: Int,
-    viewModel: ArtistDetailScreenViewModel = viewModel()
+    viewModel: PerformerDetailScreenViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(artistId) {
-        viewModel.loadArtist(artistId)
+        viewModel.loadPerformer(artistId)
     }
 
     Column(
@@ -73,7 +75,7 @@ fun ArtistDetailScreen(
                 )
             }
 
-            state.loading || state.artist == null -> {
+            state.loading || state.performer == null -> {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -85,14 +87,14 @@ fun ArtistDetailScreen(
             }
 
             else -> {
-                val artist = state.artist
-                val artistImage = artist?.image?.let {
+                val performer = state.performer
+                val artistImage = performer?.image?.let {
                     if (it.startsWith("http://")) it.replace("http://", "https://") else it
                 } ?: ""
 
                 AsyncImage(
                     model = if (artistImage.isEmpty()) null else artistImage,
-                    contentDescription = stringResource(id = R.string.desc_artist_image, artist?.name ?: ""),
+                    contentDescription = stringResource(id = R.string.desc_artist_image, performer?.name ?: ""),
                     modifier = Modifier
                         .padding(top = 20.dp)
                         .size(width = 248.dp, height = 175.dp)
@@ -104,7 +106,7 @@ fun ArtistDetailScreen(
                 )
 
                 Text(
-                    text = artist?.name ?: stringResource(id = R.string.loading),
+                    text = performer?.name ?: stringResource(id = R.string.loading),
                     modifier = Modifier
                         .padding(horizontal = 20.dp, vertical = 16.dp)
                         .testTag("artist-detail-name"),
@@ -116,7 +118,7 @@ fun ArtistDetailScreen(
                     title = stringResource(id = R.string.label_biography)
                 )
                 Text(
-                    text = artist?.description ?: "",
+                    text = performer?.description ?: "",
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Justify
@@ -124,7 +126,11 @@ fun ArtistDetailScreen(
 
                 ArtistDetailAlbumsHeader()
 
-                val albums = artist?.albums ?: emptyList()
+                val albums = when (performer) {
+                    is Band -> performer.albums
+                    is Musician -> performer.albums
+                    else -> emptyList()
+                }
                 if (albums.isNotEmpty()) {
                     albums.forEach { album ->
                         AlbumListElement(
@@ -142,23 +148,30 @@ fun ArtistDetailScreen(
                     )
                 }
 
-                Text(
-                    text = stringResource(id = R.string.label_musicians),
-                    modifier = Modifier.padding(start = 20.dp, top = 24.dp, bottom = 10.dp),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                val musicians = artist?.musicians ?: emptyList()
-                if (musicians.isNotEmpty()) {
-                    MusicianList(musicians = musicians)
-                } else {
+                if (performer is Band) {
                     Text(
-                        text = stringResource(id = R.string.empty_musicians),
-                        modifier = Modifier.padding(start = 20.dp, top = 4.dp),
-                        fontSize = 14.sp,
-                        color = Color.Gray
+                        text = stringResource(id = R.string.label_musicians),
+                        modifier = Modifier.padding(start = 20.dp, top = 24.dp, bottom = 10.dp),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
                     )
+
+                    val musicians = performer.musicians
+                    if (musicians.isNotEmpty()) {
+                        PerformerList(
+                            performers = musicians,
+                            isLazy = false,
+                            tagPrefix = "musician",
+                            showDescription = true
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(id = R.string.empty_musicians),
+                            modifier = Modifier.padding(start = 20.dp, top = 4.dp),
+                            fontSize = 14.sp,
+                            color = Color.Gray
+                        )
+                    }
                 }
             }
         }

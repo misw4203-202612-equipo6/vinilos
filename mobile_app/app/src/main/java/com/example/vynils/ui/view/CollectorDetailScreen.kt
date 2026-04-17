@@ -35,7 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.vynils.ui.components.AlbumList
-import com.example.vynils.ui.components.ArtistList
+import com.example.vynils.ui.components.PerformerList
 import com.example.vynils.ui.viewmodel.CollectorDetailScreenViewModel
 
 @Composable
@@ -138,10 +138,12 @@ fun CollectorDetailScreen(
 
         val favoritePerformers = state.collector?.favoritePerformers ?: emptyList()
         if (favoritePerformers.isNotEmpty()) {
-            ArtistList(
-                artists = favoritePerformers,
-                onArtistClick = { navController.navigate("artistDetail/$it") },
-                isLazy = false
+            PerformerList(
+                performers = favoritePerformers,
+                onPerformerClick = { navController.navigate("artistDetail/$it") },
+                isLazy = false,
+                tagPrefix = "favorite-performer",
+                showDetailButton = true
             )
         } else {
             Text(

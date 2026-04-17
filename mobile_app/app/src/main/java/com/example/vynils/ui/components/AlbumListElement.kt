@@ -61,8 +61,8 @@ fun AlbumListElement(album: Album, onClick: () -> Unit) {
                 modifier = Modifier.testTag("album-name")
             )
             
-            val artistName = if (album.artists?.isNotEmpty() == true) {
-                album.artists[0].name ?: stringResource(id = R.string.unknown_artist)
+            val artistName = if (album.performers?.isNotEmpty() == true) {
+                album.performers[0].name ?: stringResource(id = R.string.unknown_artist)
             } else {
                 stringResource(id = R.string.unknown_artist)
             }

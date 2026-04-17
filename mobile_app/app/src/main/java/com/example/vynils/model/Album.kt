@@ -11,5 +11,5 @@ data class Album(
     val genre: String,
     val recordLabel: String,
     @SerializedName("performers")
-    val artists: List<Artist>? = emptyList()
+    val performers: List<PerformerItem>? = emptyList()
 )
