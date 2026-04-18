@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,15 +19,15 @@ import com.example.vynils.R
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.vynils.ui.components.ArtistList
-import com.example.vynils.ui.viewmodel.ArtistListScreenViewModel
+import com.example.vynils.ui.components.PerformerList
+import com.example.vynils.ui.viewmodel.PerformerListScreenViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistListScreen(
     navController: NavController,
-    viewModel: ArtistListScreenViewModel = viewModel()
+    viewModel: PerformerListScreenViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val sheetState = rememberModalBottomSheetState()
@@ -42,7 +43,7 @@ fun ArtistListScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.loadArtists()
+        viewModel.loadPerformers()
     }
 
     Column(
@@ -86,10 +87,26 @@ fun ArtistListScreen(
             ) {
                 CircularProgressIndicator(color = Color.Black)
             }
+        } else if (state.error != null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = state.error ?: "",
+                    color = Color.Red,
+                    modifier = Modifier.padding(20.dp)
+                )
+            }
         } else {
-            ArtistList(state.filteredArtists, onArtistClick = { artistId ->
+            PerformerList(
+                performers = state.filteredPerformers,
+                onPerformerClick = { artistId ->
                 navController.navigate("artistDetail/$artistId")
-            })
+                },
+                tagPrefix = "artist",
+                showDetailButton = true
+            )
         }
 
         if (showFilterSheet) {
@@ -116,7 +133,9 @@ fun ArtistListScreen(
                         value = tempName,
                         onValueChange = { tempName = it },
                         label = { Text(stringResource(id = R.string.filter_label_artist_name)) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("artist-filter-name"),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color.Black,
@@ -151,7 +170,9 @@ fun ArtistListScreen(
                                     if (!sheetState.isVisible) showFilterSheet = false
                                 }
                             },
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .testTag("artist-filter-apply"),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Black,
                                 contentColor = Color.White

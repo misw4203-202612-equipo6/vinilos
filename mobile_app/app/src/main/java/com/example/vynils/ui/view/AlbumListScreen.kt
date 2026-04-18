@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vynils.R
@@ -97,6 +98,17 @@ fun AlbumListScreen(
             ) {
                 CircularProgressIndicator(color = Color.Black)
             }
+        } else if (state.error != null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = state.error ?: "",
+                    color = Color.Red,
+                    modifier = Modifier.padding(20.dp)
+                )
+            }
         } else {
             AlbumList(state.filteredAlbums, onAlbumClick = { albumId ->
                 navController.navigate("albumDetail/$albumId")
@@ -127,7 +139,9 @@ fun AlbumListScreen(
                         value = tempName,
                         onValueChange = { tempName = it },
                         label = { Text(stringResource(id = R.string.filter_label_album_name)) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("album-filter-name"),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color.Black,
@@ -142,7 +156,9 @@ fun AlbumListScreen(
                         value = tempGenre,
                         onValueChange = { tempGenre = it },
                         label = { Text(stringResource(id = R.string.filter_label_genre)) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("album-filter-genre"),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color.Black,
@@ -157,7 +173,9 @@ fun AlbumListScreen(
                         value = tempYear,
                         onValueChange = { tempYear = it },
                         label = { Text(stringResource(id = R.string.filter_label_year)) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("album-filter-year"),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
@@ -193,7 +211,9 @@ fun AlbumListScreen(
                                     if (!sheetState.isVisible) showFilterSheet = false
                                 }
                             },
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .testTag("album-filter-apply"),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Black,
                                 contentColor = Color.White

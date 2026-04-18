@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,7 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.vynils.ui.components.AlbumList
-import com.example.vynils.ui.components.ArtistList
+import com.example.vynils.ui.components.PerformerList
 import com.example.vynils.ui.viewmodel.CollectorDetailScreenViewModel
 
 @Composable
@@ -88,7 +89,9 @@ fun CollectorDetailScreen(
         )
         Text(
             text = state.collector?.name ?: stringResource(id = R.string.loading),
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 16.dp)
+                .testTag("collector-detail-name"),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold
         )
@@ -135,10 +138,12 @@ fun CollectorDetailScreen(
 
         val favoritePerformers = state.collector?.favoritePerformers ?: emptyList()
         if (favoritePerformers.isNotEmpty()) {
-            ArtistList(
-                artists = favoritePerformers,
-                onArtistClick = { navController.navigate("artistDetail/$it") },
-                isLazy = false
+            PerformerList(
+                performers = favoritePerformers,
+                onPerformerClick = { navController.navigate("artistDetail/$it") },
+                isLazy = false,
+                tagPrefix = "favorite-performer",
+                showDetailButton = true
             )
         } else {
             Text(

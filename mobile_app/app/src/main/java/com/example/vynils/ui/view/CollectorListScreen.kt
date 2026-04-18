@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -86,6 +87,17 @@ fun CollectorListScreen(
             ) {
                 CircularProgressIndicator(color = Color.Black)
             }
+        } else if (state.error != null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = state.error ?: "",
+                    color = Color.Red,
+                    modifier = Modifier.padding(20.dp)
+                )
+            }
         } else {
             CollectorList(state.filteredCollectors, onCollectorClick = { collectorId ->
                 navController.navigate("collectorDetail/$collectorId")
@@ -116,7 +128,9 @@ fun CollectorListScreen(
                         value = tempName,
                         onValueChange = { tempName = it },
                         label = { Text(stringResource(id = R.string.filter_label_collector_name)) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("collector-filter-name"),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color.Black,
@@ -151,7 +165,9 @@ fun CollectorListScreen(
                                     if (!sheetState.isVisible) showFilterSheet = false
                                 }
                             },
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .testTag("collector-filter-apply"),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Black,
                                 contentColor = Color.White

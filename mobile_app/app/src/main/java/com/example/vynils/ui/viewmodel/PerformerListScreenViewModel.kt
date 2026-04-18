@@ -2,110 +2,122 @@ package com.example.vynils.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vynils.data.repository.PerformerRepository
+import com.example.vynils.model.Band
+import com.example.vynils.model.Performer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import com.example.vynils.model.Artist
 import kotlinx.coroutines.launch
-import com.example.vynils.data.repository.ArtistRepository
 
-data class ArtistListScreenUiState(
-    val allArtists: List<Artist> = emptyList(),
-    val filteredArtists: List<Artist> = emptyList(),
+data class PerformerListScreenUiState(
+    val allPerformers: List<Performer> = emptyList(),
+    val filteredPerformers: List<Performer> = emptyList(),
     val loading: Boolean = false,
     val error: String? = null,
     val filterName: String = ""
 )
 
-class ArtistListScreenViewModel : ViewModel() {
-    private val _state = MutableStateFlow(ArtistListScreenUiState())
-    val state: StateFlow<ArtistListScreenUiState> = _state
-    private val repository = ArtistRepository()
+class PerformerListScreenViewModel : ViewModel() {
+    private val _state = MutableStateFlow(PerformerListScreenUiState())
+    val state: StateFlow<PerformerListScreenUiState> = _state
+    private val repository = PerformerRepository()
 
     init {
-        loadArtists()
+        loadPerformers()
     }
 
-    fun loadArtists() {
+    fun loadPerformers() {
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true, error = null)
             try {
-                val artists = repository.getArtists()
+                val performers = repository.getPerformers()
                 _state.value = _state.value.copy(
-                    allArtists = artists,
-                    filteredArtists = artists,
+                    allPerformers = performers,
+                    filteredPerformers = performers,
                     loading = false
                 )
             } catch (e: Exception) {
-                _state.value = _state.value.copy(error = "Error al cargar artistas: ${e.message}", loading = false)
+                _state.value = _state.value.copy(
+                    error = "Error al cargar artistas: ${e.message}",
+                    loading = false
+                )
             }
         }
     }
 
     fun updateFilter(name: String) {
-        val filtered = _state.value.allArtists.filter { artist ->
-            artist.name.contains(name, ignoreCase = true)
+        val filtered = _state.value.allPerformers.filter { performer ->
+            performer.name.contains(name, ignoreCase = true)
         }
         _state.value = _state.value.copy(
             filterName = name,
-            filteredArtists = filtered
+            filteredPerformers = filtered
         )
     }
 
     fun clearFilters() {
         _state.value = _state.value.copy(
             filterName = "",
-            filteredArtists = _state.value.allArtists
+            filteredPerformers = _state.value.allPerformers
         )
     }
 
-    fun loadArtistsMock() {
-        val fakeArtists = listOf(
-            Artist(
+    fun loadPerformersMock() {
+        val fakePerformers = listOf(
+            Band(
                 id = 1,
                 name = "Michael Jackson",
                 image = "",
                 description = "King of Pop",
+                creationDate = null,
                 collectors = emptyList(),
                 albums = emptyList(),
-                musicians =  emptyList(),
+                musicians = emptyList(),
             ),
-            Artist(
+            Band(
                 id = 2,
                 name = "Freddie Mercury",
                 image = "",
                 description = "Lead singer of Queen",
+                creationDate = null,
                 collectors = emptyList(),
                 albums = emptyList(),
-                musicians =  emptyList(),
+                musicians = emptyList(),
             ),
-            Artist(
+            Band(
                 id = 3,
                 name = "Madonna",
                 image = "",
                 description = "Queen of Pop",
+                creationDate = null,
                 collectors = emptyList(),
                 albums = emptyList(),
-                musicians =  emptyList(),
+                musicians = emptyList(),
             ),
-            Artist(
+            Band(
                 id = 4,
                 name = "Elvis Presley",
                 image = "",
                 description = "King of Rock and Roll",
+                creationDate = null,
                 collectors = emptyList(),
                 albums = emptyList(),
-                musicians =  emptyList(),
+                musicians = emptyList(),
             ),
-            Artist(
+            Band(
                 id = 5,
-                name = "Beyoncé",
+                name = "Beyonce",
                 image = "",
                 description = "Global pop icon",
+                creationDate = null,
                 collectors = emptyList(),
                 albums = emptyList(),
-                musicians =  emptyList(),
+                musicians = emptyList(),
             )
         )
-        _state.value = _state.value.copy(allArtists = fakeArtists, filteredArtists = fakeArtists)
+        _state.value = _state.value.copy(
+            allPerformers = fakePerformers,
+            filteredPerformers = fakePerformers
+        )
     }
 }

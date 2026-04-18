@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.testTag
 import coil.compose.AsyncImage
 import com.example.vynils.R
 import com.example.vynils.model.Album
@@ -32,6 +34,7 @@ fun AlbumListElement(album: Album, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .heightIn(min = 104.dp)
+            .testTag("album-item")
             .padding(horizontal = 20.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -40,6 +43,7 @@ fun AlbumListElement(album: Album, onClick: () -> Unit) {
             contentDescription = album.name,
             modifier = Modifier
                 .size(width = 78.dp, height = 78.dp)
+                .testTag("album-cover")
                 .clip(RoundedCornerShape(2.dp)),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(id = R.drawable.no_image),
@@ -51,17 +55,34 @@ fun AlbumListElement(album: Album, onClick: () -> Unit) {
                 .padding(start = 12.dp, end = 12.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(album.name ?: "", fontWeight = FontWeight.Bold)
+            Text(
+                album.name ?: "",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.testTag("album-name")
+            )
             
-            val artistName = if (album.artists?.isNotEmpty() == true) {
-                album.artists[0].name ?: stringResource(id = R.string.unknown_artist)
+            val artistName = if (album.performers?.isNotEmpty() == true) {
+                album.performers[0].name ?: stringResource(id = R.string.unknown_artist)
             } else {
                 stringResource(id = R.string.unknown_artist)
             }
-            Text(text = artistName, color = Color.DarkGray, fontWeight = FontWeight.Medium)
+            Text(
+                text = artistName,
+                color = Color.DarkGray,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.testTag("album-artist")
+            )
 
             Text(album.genre ?: "", color = Color.Gray)
             Text(DateUtils.formatRetrofitDate(album.releaseDate) ?: "")
+            TextButton(
+                onClick = onClick,
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .testTag("album-detail-button")
+            ) {
+                Text(text = "Ver detalle")
+            }
         }
     }
 }
