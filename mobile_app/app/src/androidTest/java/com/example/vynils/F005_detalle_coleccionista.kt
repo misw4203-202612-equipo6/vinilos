@@ -78,7 +78,16 @@ class F005_detalle_coleccionista {
         }
 
         composeTestRule.onAllNodesWithTag("collector-detail-button", useUnmergedTree = true)[0].performClick()
+        esperarDetalleColeccionista()
         composeTestRule.onNodeWithTag("collector-detail-name").assertIsDisplayed()
+    }
+
+    private fun esperarDetalleColeccionista() {
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule
+                .onAllNodesWithTag("collector-detail-name")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
     }
 
     private fun obtenerColeccionistaParaDetalle(): CollectorFixture {

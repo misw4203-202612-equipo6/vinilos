@@ -60,6 +60,7 @@ class F002_consultar_artistas {
         composeTestRule.onAllNodesWithTag("artist-detail-button", useUnmergedTree = true)[0].assertIsDisplayed()
         composeTestRule.onAllNodesWithTag("artist-detail-button", useUnmergedTree = true)[0].performClick()
 
+        esperarDetalleArtista()
         composeTestRule.onNodeWithTag("artist-detail-name").assertIsDisplayed()
         composeTestRule.onNodeWithText("Biografía").assertIsDisplayed()
     }
@@ -73,6 +74,14 @@ class F002_consultar_artistas {
         composeTestRule.waitUntil(timeoutMillis = 10_000) {
             composeTestRule
                 .onAllNodesWithTag("artist-item")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
+    private fun esperarDetalleArtista() {
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule
+                .onAllNodesWithTag("artist-detail-name")
                 .fetchSemanticsNodes().isNotEmpty()
         }
     }
