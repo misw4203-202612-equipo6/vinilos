@@ -106,6 +106,7 @@ class F004_detalle_artista {
         }
 
         composeTestRule.onAllNodesWithTag("artist-detail-button", useUnmergedTree = true)[0].performClick()
+        esperarDetalleArtista()
         composeTestRule.onNodeWithTag("artist-detail-name").assertIsDisplayed()
     }
 
@@ -120,6 +121,14 @@ class F004_detalle_artista {
                 }
             }
             composeTestRule.onNodeWithTag("artist-detail-scroll").performTouchInput { swipeUp() }
+        }
+    }
+
+    private fun esperarDetalleArtista() {
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule
+                .onAllNodesWithTag("artist-detail-name")
+                .fetchSemanticsNodes().isNotEmpty()
         }
     }
 

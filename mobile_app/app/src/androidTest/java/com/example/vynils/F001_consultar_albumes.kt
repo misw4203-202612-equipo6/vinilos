@@ -65,6 +65,7 @@ class F001_consultar_albumes {
         composeTestRule.onAllNodesWithTag("album-detail-button", useUnmergedTree = true)[0].assertIsDisplayed()
         composeTestRule.onAllNodesWithTag("album-detail-button", useUnmergedTree = true)[0].performClick()
 
+        esperarDetalleAlbum()
         composeTestRule.onNodeWithText("Lanzamiento:", substring = true).assertIsDisplayed()
         composeTestRule.onNodeWithText("Género:", substring = true).assertIsDisplayed()
     }
@@ -78,6 +79,14 @@ class F001_consultar_albumes {
         composeTestRule.waitUntil(timeoutMillis = 10_000) {
             composeTestRule
                 .onAllNodesWithTag("album-item")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
+    private fun esperarDetalleAlbum() {
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule
+                .onAllNodesWithText("Lanzamiento:", substring = true)
                 .fetchSemanticsNodes().isNotEmpty()
         }
     }

@@ -58,6 +58,7 @@ class F003_consultar_coleccionistas {
         composeTestRule.onAllNodesWithTag("collector-detail-button", useUnmergedTree = true)[0].assertIsDisplayed()
         composeTestRule.onAllNodesWithTag("collector-detail-button", useUnmergedTree = true)[0].performClick()
 
+        esperarDetalleColeccionista()
         composeTestRule.onNodeWithTag("collector-detail-name").assertIsDisplayed()
         composeTestRule.onNodeWithText("Teléfono:", substring = true).assertIsDisplayed()
     }
@@ -71,6 +72,14 @@ class F003_consultar_coleccionistas {
         composeTestRule.waitUntil(timeoutMillis = 10_000) {
             composeTestRule
                 .onAllNodesWithTag("collector-item")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
+    private fun esperarDetalleColeccionista() {
+        composeTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeTestRule
+                .onAllNodesWithTag("collector-detail-name")
                 .fetchSemanticsNodes().isNotEmpty()
         }
     }
