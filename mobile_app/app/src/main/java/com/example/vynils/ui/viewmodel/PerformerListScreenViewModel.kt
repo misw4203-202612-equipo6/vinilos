@@ -3,7 +3,6 @@ package com.example.vynils.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vynils.data.repository.PerformerRepository
-import com.example.vynils.model.Band
 import com.example.vynils.model.Performer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -59,65 +58,6 @@ class PerformerListScreenViewModel : ViewModel() {
         _state.value = _state.value.copy(
             filterName = "",
             filteredPerformers = _state.value.allPerformers
-        )
-    }
-
-    fun loadPerformersMock() {
-        val fakePerformers = listOf(
-            Band(
-                id = 1,
-                name = "Michael Jackson",
-                image = "",
-                description = "King of Pop",
-                creationDate = null,
-                collectors = emptyList(),
-                albums = emptyList(),
-                musicians = emptyList(),
-            ),
-            Band(
-                id = 2,
-                name = "Freddie Mercury",
-                image = "",
-                description = "Lead singer of Queen",
-                creationDate = null,
-                collectors = emptyList(),
-                albums = emptyList(),
-                musicians = emptyList(),
-            ),
-            Band(
-                id = 3,
-                name = "Madonna",
-                image = "",
-                description = "Queen of Pop",
-                creationDate = null,
-                collectors = emptyList(),
-                albums = emptyList(),
-                musicians = emptyList(),
-            ),
-            Band(
-                id = 4,
-                name = "Elvis Presley",
-                image = "",
-                description = "King of Rock and Roll",
-                creationDate = null,
-                collectors = emptyList(),
-                albums = emptyList(),
-                musicians = emptyList(),
-            ),
-            Band(
-                id = 5,
-                name = "Beyonce",
-                image = "",
-                description = "Global pop icon",
-                creationDate = null,
-                collectors = emptyList(),
-                albums = emptyList(),
-                musicians = emptyList(),
-            )
-        )
-        _state.value = _state.value.copy(
-            allPerformers = fakePerformers,
-            filteredPerformers = fakePerformers
         )
     }
 }
