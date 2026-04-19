@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">Vynils</string>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_albums">Álbumes</string>
+    <string name="nav_artists">Artistas</string>
+    <string name="nav_collectors">Coleccionistas</string>
+
+    <string name="title_vinilos">Vinilos</string>
+    <string name="title_albums">Álbumes</string>
+    <string name="title_artists">Artistas</string>
+    <string name="title_collectors">Coleccionistas</string>
+
+    <string name="desc_back">Atrás</string>
+    <string name="desc_menu">Menú</string>
+    <string name="desc_home">Inicio</string>
+    <string name="desc_filter">Filtrar</string>
+
+    <string name="filter_title_albums">Filtrar Álbumes</string>
+    <string name="filter_title_artists">Filtrar Artistas</string>
+    <string name="filter_title_collectors">Filtrar Coleccionistas</string>
+    <string name="filter_label_album_name">Nombre del álbum</string>
+    <string name="filter_label_artist_name">Nombre del artista</string>
+    <string name="filter_label_collector_name">Nombre del coleccionista</string>
+    <string name="filter_label_genre">Género (ej. Rock, Pop)</string>
+    <string name="filter_label_year">Año de lanzamiento</string>
+
+    <string name="btn_clear">Limpiar</string>
+    <string name="btn_apply">Aplicar</string>
+
+    <string name="label_release_date">Lanzamiento: %1$s</string>
+    <string name="label_genre">Género: %1$s</string>
+    <string name="label_record_label">Sello discográfico: %1$s</string>
+    <string name="label_description">Descripción</string>
+    <string name="label_biography">Biografía</string>
+    <string name="label_musicians">Músicos</string>
+    <string name="label_contact_info">Información de contacto</string>
+    <string name="label_phone">Teléfono: %1$s</string>
+    <string name="label_email">Email: %1$s</string>
+    <string name="label_albums_in_collection">Álbumes en la colección</string>
+    <string name="label_favorite_artists">Artistas favoritos</string>
+
+    <string name="empty_albums">No hay álbumes disponibles</string>
+    <string name="empty_musicians">No hay músicos registrados</string>
+    <string name="empty_collection">No hay álbumes en la colección</string>
+    <string name="empty_favorites">No hay artistas favoritos</string>
+
+    <string name="unknown_artist">Artista desconocido</string>
+    <string name="loading">Cargando…</string>
+    <string name="error_prefix">Error: %1$s</string>
+
+    <string name="desc_collector_image">Imagen del coleccionista</string>
+    <string name="desc_artist_image">Imagen de %1$s</string>
+    <string name="desc_album_cover">Carátula de %1$s</string>
+</resources>

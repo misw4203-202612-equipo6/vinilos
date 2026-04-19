@@ -1,0 +1,38 @@
+name: Android CI
+
+on:
+  pull_request:
+    branches: [develop, release, master]
+  push:
+    branches: [develop, release, master]
+  merge_group:
+
+jobs:
+  android-basic:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile_app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x ./gradlew
+
+      - name: Build debug APK
+        run: ./gradlew --no-daemon :app:assembleDebug
+
+      - name: Run unit tests
+        run: ./gradlew --no-daemon :app:testDebugUnitTest
