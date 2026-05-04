@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vynils.R
 import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -35,6 +36,15 @@ fun AlbumDetailScreen(
     viewModel: AlbumDetailScreenViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
+
+    val refreshAlbum by navController.currentBackStackEntry?.savedStateHandle?.getStateFlow("refreshAlbum", false)?.collectAsState() ?: remember { mutableStateOf(false) }
+
+    LaunchedEffect(refreshAlbum) {
+        if (refreshAlbum == true) {
+            viewModel.loadAlbum(albumId)
+            navController.currentBackStackEntry?.savedStateHandle?.set("refreshAlbum", false)
+        }
+    }
 
     LaunchedEffect(albumId) {
         viewModel.loadAlbum(albumId)

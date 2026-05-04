@@ -20,6 +20,13 @@ fun TrackFormScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    LaunchedEffect(state.success) {
+        if (state.success) {
+            navController.previousBackStackEntry?.savedStateHandle?.set("refreshAlbum", true)
+            navController.popBackStack()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
