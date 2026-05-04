@@ -24,6 +24,9 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.vynils.ui.viewmodel.AlbumDetailScreenViewModel
 import com.example.vynils.utils.DateUtils
+import com.example.vynils.ui.components.TrackList
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 
 @Composable
 fun AlbumDetailScreen(
@@ -130,7 +133,31 @@ fun AlbumDetailScreen(
                         )
                     }
                 }
-                
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Tracks",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    IconButton(
+                        onClick = { navController.navigate("trackForm/$albumId") },
+                        modifier = Modifier.padding(end = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Agregar track",
+                            tint = Color.Black
+                        )
+                    }
+                }
+                TrackList(tracks = album.tracks)
+
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
