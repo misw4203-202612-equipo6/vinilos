@@ -19,11 +19,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vynils.R
 import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.vynils.ui.viewmodel.AlbumDetailScreenViewModel
 import com.example.vynils.utils.DateUtils
+import com.example.vynils.ui.components.TrackList
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 
 @Composable
 fun AlbumDetailScreen(
@@ -32,6 +36,15 @@ fun AlbumDetailScreen(
     viewModel: AlbumDetailScreenViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
+
+    val refreshAlbum by navController.currentBackStackEntry?.savedStateHandle?.getStateFlow("refreshAlbum", false)?.collectAsState() ?: remember { mutableStateOf(false) }
+
+    LaunchedEffect(refreshAlbum) {
+        if (refreshAlbum == true) {
+            viewModel.loadAlbum(albumId)
+            navController.currentBackStackEntry?.savedStateHandle?.set("refreshAlbum", false)
+        }
+    }
 
     LaunchedEffect(albumId) {
         viewModel.loadAlbum(albumId)
@@ -130,7 +143,31 @@ fun AlbumDetailScreen(
                         )
                     }
                 }
-                
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Tracks",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    IconButton(
+                        onClick = { navController.navigate("trackForm/$albumId") },
+                        modifier = Modifier.padding(end = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Agregar track",
+                            tint = Color.Black
+                        )
+                    }
+                }
+                TrackList(tracks = album.tracks)
+
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
