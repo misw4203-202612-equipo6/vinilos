@@ -2,7 +2,10 @@ package com.example.vynils.data.remote
 
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.POST
+import retrofit2.http.Body
 import com.example.vynils.model.Album
+import com.example.vynils.model.AlbumRequest
 
 interface AlbumService {
 
@@ -11,4 +14,7 @@ interface AlbumService {
 
     @GET("albums/{id}")
     suspend fun getAlbum(@Path("id") id: Int): Album
+
+    @POST("albums")
+    suspend fun createAlbum(@Body album: AlbumRequest): Album
 }

@@ -13,6 +13,7 @@ import com.example.vynils.ui.view.CollectorListScreen
 import com.example.vynils.ui.view.AlbumDetailScreen
 import com.example.vynils.ui.view.ArtistDetailScreen
 import com.example.vynils.ui.view.CollectorDetailScreen
+import com.example.vynils.ui.view.AlbumFormScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -52,6 +53,9 @@ fun AppNavigation(navController: NavHostController) {
         ) { backStackEntry ->
             val collectorId = backStackEntry.arguments?.getInt("collectorId") ?: 0
             CollectorDetailScreen(navController, collectorId)
+        }
+        composable("albumForm") {
+            AlbumFormScreen(navController)
         }
     }
 }
