@@ -15,7 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +57,15 @@ fun ArtistDetailScreen(
     viewModel: PerformerDetailScreenViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val refreshArtist by navController.currentBackStackEntry?.savedStateHandle?.getStateFlow("refreshArtist", false)?.collectAsState()
+        ?: remember { mutableStateOf(false) }
+
+    LaunchedEffect(refreshArtist) {
+        if (refreshArtist == true) {
+            viewModel.loadPerformer(artistId)
+            navController.currentBackStackEntry?.savedStateHandle?.set("refreshArtist", false)
+        }
+    }
 
     LaunchedEffect(artistId) {
         viewModel.loadPerformer(artistId)
@@ -129,7 +140,16 @@ fun ArtistDetailScreen(
                     textAlign = TextAlign.Justify
                 )
 
-                ArtistDetailAlbumsHeader()
+                ArtistDetailAlbumsHeader(
+                    onAddClick = {
+                        val artistType = when (performer) {
+                            is Band -> "band"
+                            is Musician -> "musician"
+                            else -> return@ArtistDetailAlbumsHeader
+                        }
+                        navController.navigate("artistAlbumForm/$artistId/$artistType")
+                    }
+                )
 
                 val albums = when (performer) {
                     is Band -> performer.albums
@@ -225,7 +245,9 @@ private fun ArtistDetailSectionHeader(
 }
 
 @Composable
-private fun ArtistDetailAlbumsHeader() {
+private fun ArtistDetailAlbumsHeader(
+    onAddClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -238,14 +260,15 @@ private fun ArtistDetailAlbumsHeader() {
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
-        /*
-        IconButton(onClick = {}) {
+        IconButton(
+            onClick = onAddClick,
+            modifier = Modifier.padding(end = 4.dp)
+        ) {
             Icon(
-                imageVector = Icons.Default.AddCircle,
-                contentDescription = "Agregar album",
+                imageVector = Icons.Default.Add,
+                contentDescription = "Agregar Album",
                 tint = Color.Black
             )
         }
-        */
     }
 }

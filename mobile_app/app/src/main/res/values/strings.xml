@@ -62,4 +62,21 @@
     <string name="btn_create_album">Crear Álbum</string>
     <string name="msg_album_created_success">Álbum creado exitosamente</string>
     <string name="msg_error_fields_required">Todos los campos son obligatorios</string>
+    <string name="msg_artists_not_found">No existen artistas para este album</string>
+    <string name="title_add_artist_to_album">Agregar artista al álbum</string>
+    <string name="label_select_artist">Artista</string>
+    <string name="placeholder_select_artist">Selecciona un artista</string>
+    <string name="title_add_album_to_artist">Agregar álbum al artista</string>
+    <string name="label_select_album">Álbum</string>
+    <string name="placeholder_select_album">Selecciona un álbum</string>
+    <string name="btn_save">Guardar</string>
+    <string name="btn_back">Atras</string>
+    <string name="label_band_suffix">%1$s (Banda)</string>
+    <string name="label_musician_suffix">%1$s (Músico)</string>
+    <string name="msg_select_artist_required">Debes seleccionar un artista</string>
+    <string name="msg_select_album_required">Debes seleccionar un álbum</string>
+    <string name="msg_no_artists_available">No hay artistas disponibles</string>
+    <string name="msg_all_artists_assigned">Este álbum ya tiene asignados todos los artistas disponibles</string>
+    <string name="msg_all_albums_assigned">Este artista ya tiene asignados todos los álbumes disponibles</string>
+    <string name="msg_artist_added_success">Artista agregado exitosamente</string>
 </resources>
