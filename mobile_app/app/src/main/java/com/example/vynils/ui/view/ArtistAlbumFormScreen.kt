@@ -35,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -108,7 +109,9 @@ fun ArtistAlbumFormScreen(
                         onValueChange = { },
                         readOnly = true,
                         label = { Text(stringResource(id = R.string.label_select_album)) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("artist-album-dropdown-field"),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color.Black,
                             focusedLabelColor = Color.Black,
@@ -117,7 +120,8 @@ fun ArtistAlbumFormScreen(
                         trailingIcon = {
                             TextButton(
                                 onClick = { expanded = !expanded },
-                                enabled = state.albums.isNotEmpty()
+                                enabled = state.albums.isNotEmpty(),
+                                modifier = Modifier.testTag("artist-album-dropdown-toggle")
                             ) {
                                 Text(if (expanded) "▲" else "▼", color = Color.Black)
                             }
