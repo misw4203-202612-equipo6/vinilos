@@ -92,7 +92,7 @@ class F001_consultar_albumes {
     }
 
     private fun obtenerPrimerAlbum(): AlbumFixture {
-        val response = URL("http://10.0.2.2:3000/albums").readText()
+        val response = URL("https://vinilos-backend-equipo6-db91c0ab96d3.herokuapp.com/albums").readText()
         val albums = JSONArray(response)
         val album = albums.getJSONObject(0)
 
