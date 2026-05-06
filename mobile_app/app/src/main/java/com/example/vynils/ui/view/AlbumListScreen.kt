@@ -59,6 +59,7 @@ fun AlbumListScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .testTag("album-list-screen")
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

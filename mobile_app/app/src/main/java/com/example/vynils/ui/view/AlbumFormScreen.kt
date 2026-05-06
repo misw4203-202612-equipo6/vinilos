@@ -1,24 +1,53 @@
 package com.example.vynils.ui.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.vynils.R
+import com.example.vynils.ui.viewmodel.AlbumArtistOption
 import com.example.vynils.ui.viewmodel.AlbumFormViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,22 +59,25 @@ fun AlbumFormScreen(
     val state by viewModel.state.collectAsState()
 
     var name by remember { mutableStateOf("") }
+    var year by remember { mutableStateOf("") }
+    var genre by remember { mutableStateOf("") }
     var cover by remember { mutableStateOf("") }
     var releaseDate by remember { mutableStateOf("") }
-    var genre by remember { mutableStateOf("") }
     var recordLabel by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var showError by remember { mutableStateOf(false) }
+    var selectedArtist by remember { mutableStateOf<AlbumArtistOption?>(null) }
+    var expandedArtists by remember { mutableStateOf(false) }
+    var expandedGenres by remember { mutableStateOf(false) }
+    var expandedLabels by remember { mutableStateOf(false) }
+    var validationError by remember { mutableStateOf<String?>(null) }
 
-    var expandedGenre by remember { mutableStateOf(false) }
-    var expandedLabel by remember { mutableStateOf(false) }
-
-    val genres = listOf("Classical", "Salsa", "Rock", "Folk")
+    val genres = listOf("Rock", "Salsa", "Classical", "Folk")
     val recordLabels = listOf("Sony Music", "EMI", "Discos Fuentes", "Elektra", "Fania Records")
+    val requiredFieldsMessage = stringResource(id = R.string.msg_album_required_fields)
 
     LaunchedEffect(state.success) {
         if (state.success) {
-            navController.popBackStack()
+            validationError = null
         }
     }
 
@@ -55,7 +87,10 @@ fun AlbumFormScreen(
                 title = { Text(stringResource(id = R.string.title_add_album)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.desc_back))
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.desc_back)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -72,97 +107,53 @@ fun AlbumFormScreen(
                 .padding(padding)
                 .background(Color.White)
                 .verticalScroll(rememberScrollState())
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(20.dp)
+                .testTag("album-create-form")
         ) {
-            if (state.error != null) {
-                Text(
-                    text = stringResource(id = R.string.error_prefix, state.error ?: ""),
-                    color = Color.Red,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-            }
-
-            if (showError) {
-                Text(
-                    text = stringResource(id = R.string.msg_error_fields_required),
-                    color = Color.Red,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-            }
-
             OutlinedTextField(
                 value = name,
-                onValueChange = { name = it },
+                onValueChange = {
+                    name = it
+                    validationError = null
+                },
                 label = { Text(stringResource(id = R.string.label_album_name)) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Black,
-                    focusedLabelColor = Color.Black,
-                    cursorColor = Color.Black
-                )
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("album-create-name"),
+                singleLine = true,
+                colors = defaultFieldColors()
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedTextField(
-                value = cover,
-                onValueChange = { cover = it },
-                label = { Text(stringResource(id = R.string.label_album_cover_url)) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Black,
-                    focusedLabelColor = Color.Black,
-                    cursorColor = Color.Black
-                )
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            OutlinedTextField(
-                value = releaseDate,
-                onValueChange = { releaseDate = it },
-                label = { Text(stringResource(id = R.string.label_album_release_date)) },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("YYYY-MM-DD") },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Black,
-                    focusedLabelColor = Color.Black,
-                    cursorColor = Color.Black
-                )
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Selector de Género
             ExposedDropdownMenuBox(
-                expanded = expandedGenre,
-                onExpandedChange = { expandedGenre = !expandedGenre },
-                modifier = Modifier.fillMaxWidth()
+                expanded = expandedArtists,
+                onExpandedChange = { expandedArtists = !expandedArtists }
             ) {
                 OutlinedTextField(
-                    value = genre,
+                    value = selectedArtist?.name ?: "",
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text(stringResource(id = R.string.label_album_genre)) },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedGenre) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Black,
-                        focusedLabelColor = Color.Black
-                    )
+                    label = { Text(stringResource(id = R.string.label_artist_required)) },
+                    placeholder = { Text(stringResource(id = R.string.placeholder_select_artist)) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedArtists) },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                        .testTag("album-create-artist"),
+                    colors = defaultFieldColors()
                 )
-                ExposedDropdownMenu(
-                    expanded = expandedGenre,
-                    onDismissRequest = { expandedGenre = false },
-                    modifier = Modifier.background(Color.White)
+                DropdownMenu(
+                    expanded = expandedArtists,
+                    onDismissRequest = { expandedArtists = false }
                 ) {
-                    genres.forEach { selectionOption ->
+                    state.artists.forEach { artist ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption) },
+                            text = { Text(artist.name) },
                             onClick = {
-                                genre = selectionOption
-                                expandedGenre = false
+                                selectedArtist = artist
+                                expandedArtists = false
+                                validationError = null
                             }
                         )
                     }
@@ -171,35 +162,105 @@ fun AlbumFormScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Selector de Sello Discográfico
+            OutlinedTextField(
+                value = year,
+                onValueChange = { year = it.filter(Char::isDigit).take(4) },
+                label = { Text(stringResource(id = R.string.label_year_optional)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("album-create-year"),
+                singleLine = true,
+                colors = defaultFieldColors()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             ExposedDropdownMenuBox(
-                expanded = expandedLabel,
-                onExpandedChange = { expandedLabel = !expandedLabel },
-                modifier = Modifier.fillMaxWidth()
+                expanded = expandedGenres,
+                onExpandedChange = { expandedGenres = !expandedGenres }
+            ) {
+                OutlinedTextField(
+                    value = genre,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text(stringResource(id = R.string.label_genre_optional)) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedGenres) },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                        .testTag("album-create-genre"),
+                    colors = defaultFieldColors()
+                )
+                DropdownMenu(
+                    expanded = expandedGenres,
+                    onDismissRequest = { expandedGenres = false }
+                ) {
+                    genres.forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(option) },
+                            onClick = {
+                                genre = option
+                                expandedGenres = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = cover,
+                onValueChange = { cover = it },
+                label = { Text(stringResource(id = R.string.label_album_cover_url)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("album-create-cover"),
+                singleLine = true,
+                colors = defaultFieldColors()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = releaseDate,
+                onValueChange = { releaseDate = it },
+                label = { Text(stringResource(id = R.string.label_album_release_date)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("album-create-release-date"),
+                singleLine = true,
+                colors = defaultFieldColors()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            ExposedDropdownMenuBox(
+                expanded = expandedLabels,
+                onExpandedChange = { expandedLabels = !expandedLabels }
             ) {
                 OutlinedTextField(
                     value = recordLabel,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text(stringResource(id = R.string.label_album_record_label)) },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedLabel) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Black,
-                        focusedLabelColor = Color.Black
-                    )
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedLabels) },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                        .testTag("album-create-record-label"),
+                    colors = defaultFieldColors()
                 )
-                ExposedDropdownMenu(
-                    expanded = expandedLabel,
-                    onDismissRequest = { expandedLabel = false },
-                    modifier = Modifier.background(Color.White)
+                DropdownMenu(
+                    expanded = expandedLabels,
+                    onDismissRequest = { expandedLabels = false }
                 ) {
-                    recordLabels.forEach { selectionOption ->
+                    recordLabels.forEach { option ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption) },
+                            text = { Text(option) },
                             onClick = {
-                                recordLabel = selectionOption
-                                expandedLabel = false
+                                recordLabel = option
+                                expandedLabels = false
                             }
                         )
                     }
@@ -212,39 +273,108 @@ fun AlbumFormScreen(
                 value = description,
                 onValueChange = { description = it },
                 label = { Text(stringResource(id = R.string.label_album_description)) },
-                modifier = Modifier.fillMaxWidth().height(120.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .testTag("album-create-description"),
                 maxLines = 5,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Black,
-                    focusedLabelColor = Color.Black,
-                    cursorColor = Color.Black
-                )
+                colors = defaultFieldColors()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            if (state.loading) {
+            if (state.loading || state.loadingArtists) {
                 CircularProgressIndicator(color = Color.Black)
             } else {
+                state.error?.let {
+                    Text(
+                        text = stringResource(id = R.string.error_prefix, it),
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .padding(bottom = 12.dp)
+                            .testTag("album-create-error")
+                    )
+                }
+
+                validationError?.let {
+                    Text(
+                        text = it,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .padding(bottom = 12.dp)
+                            .testTag("album-create-validation-error")
+                    )
+                }
+
+                state.successMessage?.let {
+                    Text(
+                        text = it,
+                        color = Color(0xFF1B5E20),
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(bottom = 12.dp)
+                            .testTag("album-create-success")
+                    )
+                }
+
                 Button(
                     onClick = {
-                        if (name.isBlank() || cover.isBlank() || releaseDate.isBlank() || genre.isBlank() || recordLabel.isBlank() || description.isBlank()) {
-                            showError = true
-                        } else {
-                            showError = false
-                            viewModel.createAlbum(name, cover, releaseDate, description, genre, recordLabel)
+                        when {
+                            name.isBlank() || selectedArtist == null -> {
+                                validationError = requiredFieldsMessage
+                            }
+                            else -> {
+                                viewModel.createAlbum(
+                                    name = name,
+                                    selectedArtist = selectedArtist!!,
+                                    year = year,
+                                    genre = genre,
+                                    cover = cover,
+                                    releaseDate = releaseDate,
+                                    description = description,
+                                    recordLabel = recordLabel
+                                )
+                            }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("album-create-save"),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Black,
                         contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(8.dp)
+                    )
                 ) {
-                    Text(stringResource(id = R.string.btn_create_album), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text(stringResource(id = R.string.btn_save))
+                }
+
+                TextButton(
+                    onClick = {
+                        viewModel.resetState()
+                        val returned = navController.popBackStack("albums", inclusive = false)
+                        if (!returned) {
+                            navController.navigate("albums") {
+                                popUpTo("albumForm") { inclusive = true }
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("album-create-cancel")
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.btn_cancel),
+                        color = Color.Black
+                    )
                 }
             }
         }
     }
 }
+
+@Composable
+private fun defaultFieldColors() = OutlinedTextFieldDefaults.colors(
+    focusedBorderColor = Color.Black,
+    focusedLabelColor = Color.Black,
+    cursorColor = Color.Black
+)

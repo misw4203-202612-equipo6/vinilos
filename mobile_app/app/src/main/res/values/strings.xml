@@ -53,6 +53,9 @@
     <string name="desc_album_cover">Carátula de %1$s</string>
     <string name="desc_add">Agregar</string>
     <string name="title_add_album">Agregar Álbum</string>
+    <string name="label_artist_required">Artista</string>
+    <string name="label_year_optional">Año</string>
+    <string name="label_genre_optional">Género</string>
     <string name="label_album_name">Nombre del álbum</string>
     <string name="label_album_cover_url">URL de la carátula</string>
     <string name="label_album_release_date">Fecha de lanzamiento (YYYY-MM-DD)</string>
@@ -60,8 +63,10 @@
     <string name="label_album_record_label">Sello discográfico</string>
     <string name="label_album_description">Descripción</string>
     <string name="btn_create_album">Crear Álbum</string>
+    <string name="btn_cancel">Cancelar</string>
     <string name="msg_album_created_success">Álbum creado exitosamente</string>
     <string name="msg_error_fields_required">Todos los campos son obligatorios</string>
+    <string name="msg_album_required_fields">Nombre del álbum y artista son obligatorios</string>
     <string name="msg_artists_not_found">No existen artistas para este album</string>
     <string name="title_add_artist_to_album">Agregar artista al álbum</string>
     <string name="label_select_artist">Artista</string>
