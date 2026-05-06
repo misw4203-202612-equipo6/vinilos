@@ -125,15 +125,30 @@ fun AlbumDetailScreen(
                     color = Color.Black,
                     textAlign = TextAlign.Justify
                 )
-
-                if (album.performers?.isNotEmpty() == true) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
                         text = stringResource(id = R.string.nav_artists),
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
+                    IconButton(
+                        onClick = { navController.navigate("albumArtistForm/$albumId") },
+                        modifier = Modifier.padding(end = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Agregar artista",
+                            tint = Color.Black
+                        )
+                    }
+                }
+
+                if (album.performers?.isNotEmpty() == true) {
                     album.performers.forEach { artist ->
                         Text(
                             text = artist.name,
@@ -142,6 +157,13 @@ fun AlbumDetailScreen(
                             color = Color.DarkGray
                         )
                     }
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.msg_artists_not_found),
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp),
+                        fontSize = 16.sp,
+                        color = Color.DarkGray
+                    )
                 }
 
                 Row(

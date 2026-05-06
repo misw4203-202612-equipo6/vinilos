@@ -14,4 +14,11 @@ class BandRepository(
     suspend fun getBand(id: Int): Band {
         return service.getBand(id)
     }
+
+    suspend fun addAlbumToBand(bandId: Int, albumId: Int) {
+        val response = service.addAlbumToBand(bandId, albumId)
+        if (!response.isSuccessful) {
+            throw IllegalStateException("No fue posible asociar el album a la banda")
+        }
+    }
 }

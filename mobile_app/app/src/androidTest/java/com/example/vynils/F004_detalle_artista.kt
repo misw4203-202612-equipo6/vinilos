@@ -133,8 +133,8 @@ class F004_detalle_artista {
     }
 
     private fun obtenerPerformerParaDetalle(): PerformerFixture {
-        val bands = JSONArray(URL("http://10.0.2.2:3000/bands").readText())
-        val musicians = JSONArray(URL("http://10.0.2.2:3000/musicians").readText())
+        val bands = JSONArray(URL("https://vinilos-backend-equipo6-db91c0ab96d3.herokuapp.com/bands").readText())
+        val musicians = JSONArray(URL("https://vinilos-backend-equipo6-db91c0ab96d3.herokuapp.com/musicians").readText())
 
         val performers = mutableListOf<JSONObject>()
         for (index in 0 until bands.length()) {
@@ -158,7 +158,7 @@ class F004_detalle_artista {
             (0 until albumsArray.length()).any { index ->
                 val album = albumsArray.getJSONObject(index)
                 runCatching {
-                    val albumDetail = JSONObject(URL("http://10.0.2.2:3000/albums/${album.getInt("id")}").readText())
+                    val albumDetail = JSONObject(URL("https://vinilos-backend-equipo6-db91c0ab96d3.herokuapp.com/albums/${album.getInt("id")}").readText())
                     albumDetail.optJSONArray("tracks")?.length()?.let { it > 0 } ?: false
                 }.getOrDefault(false)
             }

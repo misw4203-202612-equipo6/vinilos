@@ -14,4 +14,11 @@ class MusicianRepository(
     suspend fun getMusician(id: Int): Musician {
         return service.getMusician(id)
     }
+
+    suspend fun addAlbumToMusician(musicianId: Int, albumId: Int) {
+        val response = service.addAlbumToMusician(musicianId, albumId)
+        if (!response.isSuccessful) {
+            throw IllegalStateException("No fue posible asociar el album al musico")
+        }
+    }
 }
