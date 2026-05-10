@@ -42,10 +42,6 @@ fun ArtistListScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.loadPerformers()
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()

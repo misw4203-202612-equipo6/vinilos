@@ -21,7 +21,7 @@ fun AlbumList(
         LazyColumn(
             modifier = modifier.fillMaxSize()
         ) {
-            items(albums) { album ->
+            items(albums, key = { it.id }) { album ->
                 AlbumListElement(album, onClick = { onAlbumClick(album.id) })
                 HorizontalDivider(color = Color(0xFFD5D9E0))
             }

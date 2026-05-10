@@ -8,10 +8,23 @@ class CollectorRepository(
     private val service: CollectorService = RetrofitInstance.collectorService
 ) {
     suspend fun getCollectors(): List<Collector> {
-        return service.getCollectors()
+        cachedCollectors?.let { return it }
+
+        return service.getCollectors().also { collectors ->
+            cachedCollectors = collectors
+        }
     }
 
     suspend fun getCollector(id: Int): Collector {
-        return service.getCollector(id)
+        cachedCollectorDetails[id]?.let { return it }
+
+        return service.getCollector(id).also { collector ->
+            cachedCollectorDetails[id] = collector
+        }
+    }
+
+    companion object {
+        private var cachedCollectors: List<Collector>? = null
+        private val cachedCollectorDetails = mutableMapOf<Int, Collector>()
     }
 }

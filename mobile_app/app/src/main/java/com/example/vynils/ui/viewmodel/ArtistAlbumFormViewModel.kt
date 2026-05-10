@@ -39,11 +39,11 @@ class ArtistAlbumFormViewModel : ViewModel() {
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true, error = null)
             try {
-                val albumsDeferred = async { albumRepository.getAlbums() }
+                val albumsDeferred = async { albumRepository.getAlbums(forceRefresh = true) }
                 val assignedAlbumsDeferred = async {
                     when (artistType.lowercase()) {
-                        "band" -> bandRepository.getBand(artistId).albums
-                        "musician" -> musicianRepository.getMusician(artistId).albums
+                        "band" -> bandRepository.getBand(artistId, forceRefresh = true).albums
+                        "musician" -> musicianRepository.getMusician(artistId, forceRefresh = true).albums
                         else -> throw IllegalArgumentException("Tipo de artista invalido")
                     }
                 }

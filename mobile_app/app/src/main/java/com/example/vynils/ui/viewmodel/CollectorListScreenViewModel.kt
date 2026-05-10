@@ -21,7 +21,13 @@ class CollectorListScreenViewModel : ViewModel() {
     val state: StateFlow<CollectorListScreenUiState> = _state
     private val repository = CollectorRepository()
 
+    init {
+        loadCollectors()
+    }
+
     fun loadCollectors() {
+        if (_state.value.loading || _state.value.allCollectors.isNotEmpty()) return
+
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true, error = null)
             try {

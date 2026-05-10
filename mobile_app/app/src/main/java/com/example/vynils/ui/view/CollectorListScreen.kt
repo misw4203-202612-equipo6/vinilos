@@ -42,10 +42,6 @@ fun CollectorListScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.loadCollectors()
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()

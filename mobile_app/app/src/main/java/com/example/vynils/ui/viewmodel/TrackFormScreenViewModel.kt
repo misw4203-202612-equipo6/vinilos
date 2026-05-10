@@ -2,7 +2,7 @@ package com.example.vynils.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vynils.data.remote.RetrofitInstance
+import com.example.vynils.data.repository.AlbumRepository
 import com.example.vynils.model.CreateTrackRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +29,7 @@ data class TrackFormUiState(
 class TrackFormScreenViewModel : ViewModel() {
     private val _state = MutableStateFlow(TrackFormUiState())
     val state: StateFlow<TrackFormUiState> = _state
+    private val repository = AlbumRepository()
     private var nextLocalId = 1
 
     fun updateName(name: String) {
@@ -95,7 +96,7 @@ class TrackFormScreenViewModel : ViewModel() {
             try {
                 _state.value.tracks.forEach { track ->
                     val trackRequest = CreateTrackRequest(name = track.name, duration = track.duration)
-                    RetrofitInstance.albumService.addTrackToAlbum(albumId, trackRequest)
+                    repository.addTrackToAlbum(albumId, trackRequest)
                 }
                 _state.value = _state.value.copy(
                     loading = false,
