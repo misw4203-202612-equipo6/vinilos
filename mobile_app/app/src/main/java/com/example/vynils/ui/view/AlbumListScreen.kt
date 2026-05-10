@@ -33,6 +33,8 @@ fun AlbumListScreen(
     viewModel: AlbumViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val refreshAlbums by navController.currentBackStackEntry?.savedStateHandle?.getStateFlow("refreshAlbums", false)?.collectAsState()
+        ?: remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showFilterSheet by remember { mutableStateOf(false) }
@@ -51,8 +53,11 @@ fun AlbumListScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.loadAlbums()
+    LaunchedEffect(refreshAlbums) {
+        if (refreshAlbums) {
+            viewModel.refreshAlbums()
+            navController.currentBackStackEntry?.savedStateHandle?.set("refreshAlbums", false)
+        }
     }
 
     Column(

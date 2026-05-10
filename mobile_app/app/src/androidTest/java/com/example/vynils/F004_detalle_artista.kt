@@ -12,8 +12,8 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import java.net.HttpURLConnection
 import java.net.URL
-import org.json.JSONException
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assume.assumeTrue
@@ -40,15 +40,23 @@ class F004_detalle_artista {
 
     @Test
     fun muestra_lista_de_albumes_del_artista() {
-        abrirDetalleDeArtista()
+        val albumAgregado = asegurarAlbumAsignadoAlArtista()
 
-        composeTestRule.waitUntil(timeoutMillis = 10_000) {
-            composeTestRule
-                .onAllNodesWithTag("album-item")
-                .fetchSemanticsNodes().isNotEmpty()
+        try {
+            abrirDetalleDeArtista()
+
+            composeTestRule.waitUntil(timeoutMillis = 10_000) {
+                composeTestRule
+                    .onAllNodesWithTag("album-item")
+                    .fetchSemanticsNodes().isNotEmpty()
+            }
+
+            composeTestRule.onAllNodesWithTag("album-item")[0].assertIsDisplayed()
+        } finally {
+            albumAgregado?.let { albumId ->
+                deleteWithoutBody("/${performerFixture.artistType.endpoint}/${performerFixture.artistId}/albums/$albumId")
+            }
         }
-
-        composeTestRule.onAllNodesWithTag("album-item")[0].assertIsDisplayed()
     }
 
     @Test
@@ -136,21 +144,22 @@ class F004_detalle_artista {
         val bands = JSONArray(URL("https://vinilos-backend-equipo6-db91c0ab96d3.herokuapp.com/bands").readText())
         val musicians = JSONArray(URL("https://vinilos-backend-equipo6-db91c0ab96d3.herokuapp.com/musicians").readText())
 
-        val performers = mutableListOf<JSONObject>()
+        val performers = mutableListOf<PerformerCandidate>()
         for (index in 0 until bands.length()) {
-            performers.add(bands.getJSONObject(index))
+            performers.add(PerformerCandidate(bands.getJSONObject(index), ArtistEndpointType.BAND))
         }
         for (index in 0 until musicians.length()) {
-            performers.add(musicians.getJSONObject(index))
+            performers.add(PerformerCandidate(musicians.getJSONObject(index), ArtistEndpointType.MUSICIAN))
         }
         if (performers.isEmpty()) {
             throw IllegalStateException("No hay performers disponibles para la prueba")
         }
 
         // Prefer a performer with albums so the detail assertions are meaningful.
-        val performer = performers.firstOrNull { performerJson ->
+        val candidate = performers.firstOrNull { (performerJson) ->
             performerJson.optJSONArray("albums")?.length()?.let { it > 0 } ?: false
         } ?: performers.first()
+        val performer = candidate.json
 
         val hasMusicians = performer.optJSONArray("musicians")?.length()?.let { it > 0 } ?: false
         val albums = performer.optJSONArray("albums")
@@ -165,15 +174,105 @@ class F004_detalle_artista {
         } ?: false
 
         return PerformerFixture(
+            artistId = performer.getInt("id"),
+            artistType = candidate.type,
             nameFragment = performer.getString("name").take(4),
             hasMusicians = hasMusicians,
             hasTracks = hasTracks
         )
     }
 
+    private fun asegurarAlbumAsignadoAlArtista(): Int? {
+        val assignedAlbumIds = obtenerAlbumesDelArtista().toSet()
+        val albumId = obtenerTodosLosAlbumes()
+            .firstOrNull { albumId -> albumId !in assignedAlbumIds }
+            ?: return null
+
+        postWithoutBody("/${performerFixture.artistType.endpoint}/${performerFixture.artistId}/albums/$albumId")
+        esperarArtistaConAlbumes(assignedAlbumIds + albumId)
+        return albumId
+    }
+
+    private fun obtenerAlbumesDelArtista(): List<Int> {
+        val detail = getJsonObject("/${performerFixture.artistType.endpoint}/${performerFixture.artistId}")
+        val albums = detail.optJSONArray("albums") ?: JSONArray()
+        return (0 until albums.length()).map { index ->
+            albums.getJSONObject(index).getInt("id")
+        }
+    }
+
+    private fun obtenerTodosLosAlbumes(): List<Int> {
+        val albums = getJsonArray("/albums")
+        return (0 until albums.length()).map { index ->
+            albums.getJSONObject(index).getInt("id")
+        }
+    }
+
+    private fun esperarArtistaConAlbumes(expectedAlbumIds: Set<Int>) {
+        repeat(20) {
+            val current = obtenerAlbumesDelArtista().toSet()
+            if (current == expectedAlbumIds) return
+            Thread.sleep(300)
+        }
+        throw IllegalStateException("El artista no alcanzo el estado esperado")
+    }
+
+    private fun getJsonArray(path: String): JSONArray {
+        val response = URL("$BASE_URL$path").readText()
+        return JSONArray(response)
+    }
+
+    private fun getJsonObject(path: String): JSONObject {
+        val response = URL("$BASE_URL$path").readText()
+        return JSONObject(response)
+    }
+
+    private fun postWithoutBody(path: String) {
+        requestWithoutBody("POST", path)
+    }
+
+    private fun deleteWithoutBody(path: String) {
+        requestWithoutBody("DELETE", path)
+    }
+
+    private fun requestWithoutBody(method: String, path: String) {
+        val connection = (URL("$BASE_URL$path").openConnection() as HttpURLConnection).apply {
+            requestMethod = method
+            connectTimeout = 10_000
+            readTimeout = 10_000
+        }
+
+        try {
+            val responseCode = connection.responseCode
+            if (responseCode !in 200..299) {
+                val errorBody = connection.errorStream?.bufferedReader()?.use { reader -> reader.readText() }.orEmpty()
+                throw IllegalStateException("$method $path fallo con codigo $responseCode. $errorBody")
+            }
+            connection.inputStream?.close()
+        } finally {
+            connection.disconnect()
+        }
+    }
+
+    private data class PerformerCandidate(
+        val json: JSONObject,
+        val type: ArtistEndpointType
+    )
+
     private data class PerformerFixture(
+        val artistId: Int,
+        val artistType: ArtistEndpointType,
         val nameFragment: String,
         val hasMusicians: Boolean,
         val hasTracks: Boolean
     )
+
+    private enum class ArtistEndpointType(val endpoint: String) {
+        BAND("bands"),
+        MUSICIAN("musicians")
+    }
+
+    private companion object {
+        const val BASE_URL = "https://vinilos-backend-equipo6-db91c0ab96d3.herokuapp.com"
+    }
 }

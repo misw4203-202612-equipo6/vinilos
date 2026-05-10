@@ -8,6 +8,18 @@ class PerformerRepository(
     private val service: PerformerService = RetrofitInstance.performerService
 ) {
     suspend fun getPerformers(): List<Performer> {
-        return service.getPerformers()
+        cachedPerformers?.let { return it }
+
+        return service.getPerformers().also { performers ->
+            cachedPerformers = performers
+        }
+    }
+
+    companion object {
+        private var cachedPerformers: List<Performer>? = null
+
+        fun invalidatePerformers() {
+            cachedPerformers = null
+        }
     }
 }

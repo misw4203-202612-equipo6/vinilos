@@ -78,6 +78,7 @@ fun AlbumFormScreen(
     LaunchedEffect(state.success) {
         if (state.success) {
             validationError = null
+            navController.previousBackStackEntry?.savedStateHandle?.set("refreshAlbums", true)
         }
     }
 

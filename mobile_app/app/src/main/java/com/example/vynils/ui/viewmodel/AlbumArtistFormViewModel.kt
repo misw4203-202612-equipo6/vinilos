@@ -46,9 +46,9 @@ class AlbumArtistFormViewModel : ViewModel() {
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true, error = null)
             try {
-                val albumDeferred = async { albumRepository.getAlbum(albumId) }
-                val bandsDeferred = async { bandRepository.getBands() }
-                val musiciansDeferred = async { musicianRepository.getMusicians() }
+                val albumDeferred = async { albumRepository.getAlbum(albumId, forceRefresh = true) }
+                val bandsDeferred = async { bandRepository.getBands(forceRefresh = true) }
+                val musiciansDeferred = async { musicianRepository.getMusicians(forceRefresh = true) }
                 val assignedPerformers = albumDeferred.await().performers.orEmpty()
 
                 val artists = bandsDeferred.await().map {
