@@ -87,7 +87,7 @@ class F002_consultar_artistas {
     }
 
     private fun obtenerPrimerArtista(): ArtistFixture {
-        val response = URL("http://10.0.2.2:3000/bands").readText()
+        val response = URL("https://vinilos-backend-equipo6-db91c0ab96d3.herokuapp.com/bands").readText()
         val artists = JSONArray(response)
         val artist = artists.getJSONObject(0)
         println(artist)

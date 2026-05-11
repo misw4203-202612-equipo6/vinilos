@@ -9,6 +9,7 @@ import com.example.vynils.model.Band
 import com.example.vynils.model.Musician
 import com.example.vynils.model.Performer
 import com.example.vynils.model.Track
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -32,9 +33,9 @@ class PerformerDetailScreenViewModel : ViewModel() {
             _state.value = _state.value.copy(loading = true, error = null)
             try {
                 val performer = try {
-                    bandRepository.getBand(id)
+                    bandRepository.getBand(id, forceRefresh = true)
                 } catch (_: Exception) {
-                    musicianRepository.getMusician(id)
+                    musicianRepository.getMusician(id, forceRefresh = true)
                 }
                 val albums = when (performer) {
                     is Band -> performer.albums
@@ -42,10 +43,13 @@ class PerformerDetailScreenViewModel : ViewModel() {
                     else -> emptyList()
                 }
                 val tracks = mutableListOf<Track>()
-                albums.forEach { album ->
-                    val albumTracks = runCatching { albumRepository.getAlbum(album.id).tracks }.getOrDefault(emptyList())
-                    tracks.addAll(albumTracks)
+                val trackRequests = albums.map { album ->
+                    async {
+                        runCatching { albumRepository.getAlbum(album.id, forceRefresh = true).tracks }
+                            .getOrDefault(emptyList())
+                    }
                 }
+                trackRequests.forEach { tracks.addAll(it.await()) }
                 _state.value = PerformerDetailScreenUiState(
                     performer = performer,
                     tracks = tracks,

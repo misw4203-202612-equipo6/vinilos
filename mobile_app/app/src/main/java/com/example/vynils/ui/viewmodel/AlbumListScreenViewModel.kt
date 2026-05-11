@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.example.vynils.model.Album
 import kotlinx.coroutines.launch
-import com.example.vynils.utils.DateUtils
 
 data class AlbumUiState(
     val allAlbums: List<Album> = emptyList(),
@@ -28,10 +27,23 @@ class AlbumViewModel : ViewModel() {
         loadAlbums()
     }
 
-    fun loadAlbums() {
+    fun loadAlbums(forceRefresh: Boolean = false) {
+        if (!forceRefresh && (_state.value.loading || _state.value.allAlbums.isNotEmpty())) return
+
+        fetchAlbums(forceRefresh)
+    }
+
+    fun refreshAlbums() {
+        fetchAlbums(forceRefresh = true)
+    }
+
+    private fun fetchAlbums(forceRefresh: Boolean) {
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true, error = null)
             try {
+                if (forceRefresh) {
+                    AlbumRepository.invalidateAlbums()
+                }
                 val albums = repository.getAlbums()
                 _state.value = _state.value.copy(
                     allAlbums = albums,

@@ -13,6 +13,10 @@ import com.example.vynils.ui.view.CollectorListScreen
 import com.example.vynils.ui.view.AlbumDetailScreen
 import com.example.vynils.ui.view.ArtistDetailScreen
 import com.example.vynils.ui.view.CollectorDetailScreen
+import com.example.vynils.ui.view.AlbumFormScreen
+import com.example.vynils.ui.view.AlbumArtistFormScreen
+import com.example.vynils.ui.view.ArtistAlbumFormScreen
+import com.example.vynils.ui.view.TrackFormScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -47,11 +51,39 @@ fun AppNavigation(navController: NavHostController) {
             ArtistDetailScreen(navController, artistId)
         }
         composable(
+            route = "artistAlbumForm/{artistId}/{artistType}",
+            arguments = listOf(
+                navArgument("artistId") { type = NavType.IntType },
+                navArgument("artistType") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val artistId = backStackEntry.arguments?.getInt("artistId") ?: 0
+            val artistType = backStackEntry.arguments?.getString("artistType").orEmpty()
+            ArtistAlbumFormScreen(navController, artistId, artistType)
+        }
+        composable(
             route = "collectorDetail/{collectorId}",
             arguments = listOf(navArgument("collectorId") { type = NavType.IntType })
         ) { backStackEntry ->
             val collectorId = backStackEntry.arguments?.getInt("collectorId") ?: 0
             CollectorDetailScreen(navController, collectorId)
+        }
+        composable("albumForm") {
+            AlbumFormScreen(navController)
+        }
+        composable(
+            route = "albumArtistForm/{albumId}",
+            arguments = listOf(navArgument("albumId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val albumId = backStackEntry.arguments?.getInt("albumId") ?: 0
+            AlbumArtistFormScreen(navController, albumId)
+        }
+        composable(
+            route = "trackForm/{albumId}",
+            arguments = listOf(navArgument("albumId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val albumId = backStackEntry.arguments?.getInt("albumId") ?: 0
+            TrackFormScreen(navController, albumId)
         }
     }
 }

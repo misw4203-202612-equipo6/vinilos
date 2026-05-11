@@ -85,7 +85,7 @@ class F003_consultar_coleccionistas {
     }
 
     private fun obtenerPrimerColeccionista(): CollectorFixture {
-        val response = URL("http://10.0.2.2:3000/collectors").readText()
+        val response = URL("https://vinilos-backend-equipo6-db91c0ab96d3.herokuapp.com/collectors").readText()
         val collectors = JSONArray(response)
         val collector = collectors.getJSONObject(0)
 

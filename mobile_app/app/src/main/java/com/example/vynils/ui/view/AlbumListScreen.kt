@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -32,6 +33,8 @@ fun AlbumListScreen(
     viewModel: AlbumViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val refreshAlbums by navController.currentBackStackEntry?.savedStateHandle?.getStateFlow("refreshAlbums", false)?.collectAsState()
+        ?: remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showFilterSheet by remember { mutableStateOf(false) }
@@ -50,14 +53,18 @@ fun AlbumListScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.loadAlbums()
+    LaunchedEffect(refreshAlbums) {
+        if (refreshAlbums) {
+            viewModel.refreshAlbums()
+            navController.currentBackStackEntry?.savedStateHandle?.set("refreshAlbums", false)
+        }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .testTag("album-list-screen")
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -71,25 +78,39 @@ fun AlbumListScreen(
                 fontWeight = FontWeight.Bold
             )
 
-
-            IconButton(
-                onClick = { showFilterSheet = true },
-                modifier = Modifier.padding(end = 8.dp)
-            ) {
-                BadgedBox(badge = {
-                    if (state.filterName.isNotEmpty() || state.filterGenre.isNotEmpty() || state.filterYear.isNotEmpty()) {
-                        Badge(containerColor = Color.Black) { Text("", color = Color.White) }
-                    }
-                }) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = { navController.navigate("albumForm") },
+                    modifier = Modifier.padding(end = 4.dp)
+                ) {
                     Icon(
-                        imageVector = Icons.Default.FilterList,
-                        contentDescription = stringResource(id = R.string.desc_filter),
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = R.string.desc_add),
                         tint = Color.Black
                     )
+                }
+
+                IconButton(
+                    onClick = { showFilterSheet = true },
+                    modifier = Modifier.padding(end = 8.dp)
+                ) {
+                    BadgedBox(badge = {
+                        if (state.filterName.isNotEmpty() || state.filterGenre.isNotEmpty() || state.filterYear.isNotEmpty()) {
+                            Badge(containerColor = Color.Black) { Text("", color = Color.White) }
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.FilterList,
+                            contentDescription = stringResource(id = R.string.desc_filter),
+                            tint = Color.Black
+                        )
+                    }
                 }
             }
 
         }
+
+
 
         if (state.loading) {
             Box(
@@ -227,4 +248,5 @@ fun AlbumListScreen(
             }
         }
     }
+
 }

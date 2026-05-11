@@ -14,7 +14,7 @@ fun CollectorList(collectors: List<Collector>, onCollectorClick: (Int) -> Unit) 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
-        items(collectors) { collector ->
+        items(collectors, key = { it.id }) { collector ->
             CollectorListElement(collector, onClick = { onCollectorClick(collector.id) })
             HorizontalDivider(color = Color(0xFFD5D9E0))
         }

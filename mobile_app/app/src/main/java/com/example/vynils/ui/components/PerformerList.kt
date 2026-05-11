@@ -24,7 +24,7 @@ fun PerformerList(
         LazyColumn(
             modifier = modifier.fillMaxSize()
         ) {
-            items(performers) { performer ->
+            items(performers, key = { it.id }) { performer ->
                 PerformerListElement(
                     performer = performer,
                     onClick = onPerformerClick?.let { click -> { click(performer.id) } },
