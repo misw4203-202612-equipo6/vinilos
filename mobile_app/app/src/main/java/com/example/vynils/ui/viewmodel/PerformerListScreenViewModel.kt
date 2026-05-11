@@ -26,6 +26,8 @@ class PerformerListScreenViewModel : ViewModel() {
     }
 
     fun loadPerformers() {
+        if (_state.value.loading || _state.value.allPerformers.isNotEmpty()) return
+
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true, error = null)
             try {

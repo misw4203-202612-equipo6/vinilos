@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.testTag
 import coil.compose.AsyncImage
@@ -29,6 +30,10 @@ import com.example.vynils.utils.DateUtils
 
 @Composable
 fun AlbumListElement(album: Album, onClick: () -> Unit) {
+    val releaseDate = remember(album.releaseDate) {
+        DateUtils.formatRetrofitDate(album.releaseDate).orEmpty()
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,7 +79,7 @@ fun AlbumListElement(album: Album, onClick: () -> Unit) {
             )
 
             Text(album.genre ?: "", color = Color.Gray)
-            Text(DateUtils.formatRetrofitDate(album.releaseDate) ?: "")
+            Text(releaseDate)
             TextButton(
                 onClick = onClick,
                 modifier = Modifier

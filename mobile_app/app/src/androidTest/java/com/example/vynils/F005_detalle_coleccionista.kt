@@ -91,7 +91,7 @@ class F005_detalle_coleccionista {
     }
 
     private fun obtenerColeccionistaParaDetalle(): CollectorFixture {
-        val collectors = JSONArray(URL("http://10.0.2.2:3000/collectors").readText())
+        val collectors = JSONArray(URL("https://vinilos-backend-equipo6-db91c0ab96d3.herokuapp.com/collectors").readText())
         val collector = (0 until collectors.length())
             .map { collectors.getJSONObject(it) }
             .firstOrNull { json ->
