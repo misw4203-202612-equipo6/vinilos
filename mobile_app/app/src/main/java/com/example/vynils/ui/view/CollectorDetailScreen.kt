@@ -1,6 +1,7 @@
 package com.example.vynils.ui.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,8 +13,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import com.example.vynils.R
 import androidx.compose.ui.res.stringResource
@@ -21,6 +26,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,9 +52,19 @@ fun CollectorDetailScreen(
     viewModel: CollectorDetailScreenViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val refreshCollector by navController.currentBackStackEntry?.savedStateHandle
+        ?.getStateFlow("refreshCollector", false)?.collectAsState()
+        ?: remember { mutableStateOf(false) }
 
     LaunchedEffect(collectorId) {
         viewModel.loadCollector(collectorId)
+    }
+
+    LaunchedEffect(refreshCollector) {
+        if (refreshCollector == true) {
+            viewModel.loadCollector(collectorId, forceRefresh = true)
+            navController.currentBackStackEntry?.savedStateHandle?.set("refreshCollector", false)
+        }
     }
 
     if (state.loading) {
@@ -106,11 +123,10 @@ fun CollectorDetailScreen(
             fontSize = 14.sp
         )
 
-        Text(
-            text = stringResource(id = R.string.label_albums_in_collection),
-            modifier = Modifier.padding(start = 20.dp, top = 12.dp, bottom = 10.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+        CollectorDetailSectionHeader(
+            title = stringResource(id = R.string.label_albums_in_collection),
+            onAddClick = { navController.navigate("collectorAlbumForm/$collectorId") },
+            addContentDescription = stringResource(id = R.string.desc_add_album_to_collector)
         )
 
         val collectorAlbums = state.collector?.collectorAlbums ?: emptyList()
@@ -129,11 +145,10 @@ fun CollectorDetailScreen(
             )
         }
 
-        Text(
-            text = stringResource(id = R.string.label_favorite_artists),
-            modifier = Modifier.padding(start = 20.dp, top = 24.dp, bottom = 10.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+        CollectorDetailSectionHeader(
+            title = stringResource(id = R.string.label_favorite_artists),
+            onAddClick = { navController.navigate("collectorArtistForm/$collectorId") },
+            addContentDescription = stringResource(id = R.string.desc_add_favorite_artist)
         )
 
         val favoritePerformers = state.collector?.favoritePerformers ?: emptyList()
@@ -155,6 +170,37 @@ fun CollectorDetailScreen(
         }
         
             Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+private fun CollectorDetailSectionHeader(
+    title: String,
+    onAddClick: () -> Unit,
+    addContentDescription: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, top = 12.dp, end = 8.dp, bottom = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+        IconButton(
+            onClick = onAddClick,
+            modifier = Modifier.padding(end = 4.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = addContentDescription,
+                tint = Color.Black
+            )
         }
     }
 }

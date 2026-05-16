@@ -84,4 +84,18 @@
     <string name="msg_all_artists_assigned">Este álbum ya tiene asignados todos los artistas disponibles</string>
     <string name="msg_all_albums_assigned">Este artista ya tiene asignados todos los álbumes disponibles</string>
     <string name="msg_artist_added_success">Artista agregado exitosamente</string>
+
+    <!-- HU10: Agregar artistas favoritos al coleccionista -->
+    <string name="title_add_favorite_artist">Agregar artista favorito</string>
+    <string name="msg_all_favorite_artists_assigned">Todos los artistas ya son favoritos de este coleccionista</string>
+    <string name="desc_add_favorite_artist">Agregar artista favorito</string>
+
+    <!-- HU11: Agregar álbum al coleccionista -->
+    <string name="title_add_album_to_collector">Agregar álbum a colección</string>
+    <string name="label_album_price">Precio</string>
+    <string name="label_album_status">Estado</string>
+    <string name="status_active">Activo</string>
+    <string name="status_inactive">Inactivo</string>
+    <string name="msg_all_collector_albums_assigned">Todos los álbumes ya están en la colección</string>
+    <string name="desc_add_album_to_collector">Agregar álbum a colección</string>
 </resources>
