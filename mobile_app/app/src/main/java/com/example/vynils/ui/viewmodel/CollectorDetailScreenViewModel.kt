@@ -19,11 +19,11 @@ class CollectorDetailScreenViewModel : ViewModel() {
     val state: StateFlow<CollectorDetailUiState> = _state
     private val repository = CollectorRepository()
 
-    fun loadCollector(id: Int) {
+    fun loadCollector(id: Int, forceRefresh: Boolean = false) {
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true, error = null)
             try {
-                val collector = repository.getCollector(id)
+                val collector = repository.getCollector(id, forceRefresh = forceRefresh)
                 _state.value = CollectorDetailUiState(collector = collector, loading = false)
             } catch (e: Exception) {
                 _state.value = CollectorDetailUiState(error = "Error al cargar coleccionista: ${e.message}", loading = false)

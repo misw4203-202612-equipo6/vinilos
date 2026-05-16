@@ -17,6 +17,8 @@ import com.example.vynils.ui.view.AlbumFormScreen
 import com.example.vynils.ui.view.AlbumArtistFormScreen
 import com.example.vynils.ui.view.ArtistAlbumFormScreen
 import com.example.vynils.ui.view.TrackFormScreen
+import com.example.vynils.ui.view.CollectorArtistFormScreen
+import com.example.vynils.ui.view.CollectorAlbumFormScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -84,6 +86,20 @@ fun AppNavigation(navController: NavHostController) {
         ) { backStackEntry ->
             val albumId = backStackEntry.arguments?.getInt("albumId") ?: 0
             TrackFormScreen(navController, albumId)
+        }
+        composable(
+            route = "collectorArtistForm/{collectorId}",
+            arguments = listOf(navArgument("collectorId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val collectorId = backStackEntry.arguments?.getInt("collectorId") ?: 0
+            CollectorArtistFormScreen(navController, collectorId)
+        }
+        composable(
+            route = "collectorAlbumForm/{collectorId}",
+            arguments = listOf(navArgument("collectorId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val collectorId = backStackEntry.arguments?.getInt("collectorId") ?: 0
+            CollectorAlbumFormScreen(navController, collectorId)
         }
     }
 }
